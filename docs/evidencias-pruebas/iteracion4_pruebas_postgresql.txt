@@ -1,4 +1,4 @@
-Found 72 test(s).
+Found 74 test(s).
 Creating test database for alias 'default' ('test_sgr')...
 Operations to perform:
   Synchronize unmigrated apps: messages, staticfiles
@@ -88,6 +88,10 @@ test_cps06_inyeccion_sql_en_busqueda (gestion.tests.test_seguridad.InyeccionTest
 CP-S06 A03: «' OR '1'='1» en la búsqueda no expone otras filas. ... ok
 test_cps07_xss_almacenado_se_muestra_escapado (gestion.tests.test_seguridad.InyeccionTests.test_cps07_xss_almacenado_se_muestra_escapado)
 CP-S07 A03: un <script> guardado en la descripción se muestra como texto. ... ok
+test_cps20_administrador_consulta_la_bitacora (gestion.tests.test_seguridad.PanelAdministracionTests.test_cps20_administrador_consulta_la_bitacora)
+CP-S20 A09: un usuario con rol Administrador consulta la bitácora en el panel. ... ok
+test_cps21_cambiar_rol_quita_el_acceso_al_panel (gestion.tests.test_seguridad.PanelAdministracionTests.test_cps21_cambiar_rol_quita_el_acceso_al_panel)
+CP-S21 A01: si deja de ser Administrador, pierde el acceso al panel. ... ok
 test_cp04_registrar_actividad_valida_genera_codigo (gestion.tests.test_sprint.ActividadTests.test_cp04_registrar_actividad_valida_genera_codigo)
 CP-04 HU-01: actividad válida se guarda y muestra su código. ... ok
 test_cp05_campo_obligatorio_vacio_no_guarda (gestion.tests.test_sprint.ActividadTests.test_cp05_campo_obligatorio_vacio_no_guarda)
@@ -154,7 +158,7 @@ test_cp32_registros_simultaneos_no_duplican_codigo (gestion.tests.test_concurren
 CP-32 RNF-003: 20 registros simultáneos reciben 20 códigos distintos. ... ok
 
 ----------------------------------------------------------------------
-Ran 72 tests in 71.073s
+Ran 74 tests in 75.200s
 
 OK
 Destroying test database for alias 'default' ('test_sgr')...

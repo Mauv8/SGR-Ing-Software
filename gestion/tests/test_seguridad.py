@@ -192,3 +192,27 @@ class AuditoriaTests(BaseSprint):
             registro.save()
         with self.assertRaises(Exception):
             registro.delete()
+
+
+class PanelAdministracionTests(BaseSprint):
+    """A01 · El rol Administrador debe poder auditar; los demás roles no."""
+
+    def test_cps20_administrador_consulta_la_bitacora(self):
+        """CP-S20 A09: un usuario con rol Administrador consulta la bitácora en el panel."""
+        from gestion.models import Usuario
+        administrador = Usuario.objects.create_user(
+            username="avera", password=CLAVE, rol=Usuario.ADMINISTRADOR,
+        )
+        self.entrar(administrador)
+        r = self.client.get("/admin/gestion/registroauditoria/")
+        self.assertEqual(r.status_code, 200)
+
+    def test_cps21_cambiar_rol_quita_el_acceso_al_panel(self):
+        """CP-S21 A01: si deja de ser Administrador, pierde el acceso al panel."""
+        from gestion.models import Usuario
+        usuario = Usuario.objects.create_user(username="temporal", password=CLAVE, rol=Usuario.ADMINISTRADOR)
+        usuario.rol = Usuario.VERIFICADOR
+        usuario.delegacion = self.rural
+        usuario.save()
+        self.entrar(usuario)
+        self.assertNotEqual(self.client.get("/admin/gestion/registroauditoria/").status_code, 200)

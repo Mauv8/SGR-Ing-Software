@@ -109,9 +109,6 @@ class Command(BaseCommand):
                 delegacion=delegacion,
                 cargo=cargo,
             )
-            if rol == Usuario.ADMINISTRADOR:
-                usuario.is_staff = True
-                usuario.save(update_fields=["is_staff"])
             creados += 1
 
         self.stdout.write(self.style.SUCCESS(

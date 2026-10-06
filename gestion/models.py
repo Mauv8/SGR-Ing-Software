@@ -193,6 +193,19 @@ class Usuario(AbstractUser):
         """
         return self.es_administrador or self.is_superuser
 
+    def save(self, *args, **kwargs):
+        # El acceso al panel depende sólo del rol: así, al cambiar el rol de
+        # una persona, sus permisos cambian con él y no quedan accesos
+        # olvidados (mínimo privilegio, RNF-005).
+        if not self.is_superuser:
+            self.is_staff = self.rol == self.ADMINISTRADOR
+        super().save(*args, **kwargs)
+        grupo = grupo_administradores()
+        if self.rol == self.ADMINISTRADOR:
+            self.groups.add(grupo)
+        else:
+            self.groups.remove(grupo)
+
     def clean(self):
         # Un funcionario sin delegación no tendría ámbito que consultar, y un
         # funcionario sin cargo no tendría ítems que registrar.
@@ -204,6 +217,23 @@ class Usuario(AbstractUser):
                 errores["cargo"] = "Un funcionario debe tener un cargo asignado."
             if errores:
                 raise ValidationError(errores)
+
+
+def grupo_administradores():
+    """Grupo con los permisos del rol Administrador en el panel.
+
+    Puede ver y mantener los datos institucionales, pero no eliminar: los
+    registros se desactivan para conservar el historial.
+    """
+    from django.contrib.auth.models import Group, Permission
+
+    grupo, creado = Group.objects.get_or_create(name="Administradores SGR")
+    if creado or not grupo.permissions.exists():
+        permisos = Permission.objects.filter(content_type__app_label="gestion").exclude(
+            codename__startswith="delete_",
+        )
+        grupo.permissions.set(permisos)
+    return grupo
 
 
 # ---------------------------------------------------------------------------
