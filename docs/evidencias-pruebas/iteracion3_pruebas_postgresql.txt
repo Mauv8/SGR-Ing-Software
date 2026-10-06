@@ -1,5 +1,5 @@
 Found 72 test(s).
-Creating test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
+Creating test database for alias 'default' ('test_sgr')...
 Operations to perform:
   Synchronize unmigrated apps: messages, staticfiles
   Apply all migrations: admin, auth, contenttypes, gestion, sessions
@@ -151,10 +151,10 @@ CP-30 Usabilidad: la página de acceso denegado está en español y permite volv
 test_cp31_tablas_adaptables_a_pantallas_angostas (gestion.tests.test_sprint.UsabilidadTests.test_cp31_tablas_adaptables_a_pantallas_angostas)
 CP-31 Usabilidad: las tablas de listados usan el diseño apilable en móvil. ... ok
 test_cp32_registros_simultaneos_no_duplican_codigo (gestion.tests.test_concurrencia.ConcurrenciaTests.test_cp32_registros_simultaneos_no_duplican_codigo)
-CP-32 RNF-003: 20 registros simultáneos reciben 20 códigos distintos. ... skipped 'Requiere PostgreSQL'
+CP-32 RNF-003: 20 registros simultáneos reciben 20 códigos distintos. ... ok
 
 ----------------------------------------------------------------------
-Ran 72 tests in 67.861s
+Ran 72 tests in 71.073s
 
-OK (skipped=1)
-Destroying test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
+OK
+Destroying test database for alias 'default' ('test_sgr')...

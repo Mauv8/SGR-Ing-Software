@@ -107,15 +107,30 @@ WSGI_APPLICATION = "config.wsgi.application"
 # ---------------------------------------------------------------------------
 # Base de datos
 # ---------------------------------------------------------------------------
-# SQLite basta para el prototipo. PostgreSQL es el destino declarado en el
-# diagrama de despliegue; el cambio es de configuración, no de código.
+# PostgreSQL es la base de datos del proyecto (diagrama de despliegue: RDS
+# PostgreSQL). Se activa definiendo POSTGRES_DB en el entorno. Si no está
+# definida, se usa SQLite para que el prototipo arranque sin instalar nada más.
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if os.environ.get("POSTGRES_DB"):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.environ["POSTGRES_DB"],
+            "USER": os.environ.get("POSTGRES_USER", "sgr"),
+            "PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
+            "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
+            "PORT": os.environ.get("POSTGRES_PORT", "5432"),
+            # En AWS RDS se exige conexión cifrada (RNF-006).
+            "OPTIONS": {"sslmode": os.environ.get("POSTGRES_SSLMODE", "prefer")},
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # ---------------------------------------------------------------------------
