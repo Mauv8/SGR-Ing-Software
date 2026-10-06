@@ -38,6 +38,15 @@ ALLOWED_HOSTS = [
     if h.strip()
 ]
 
+# Orígenes confiables para formularios enviados por HTTPS (p. ej. la IP de EC2).
+CSRF_TRUSTED_ORIGINS = [
+    o.strip() for o in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if o.strip()
+]
+
+# En EC2 la aplicación queda detrás de Nginx; sólo entonces se confía en la
+# cabecera X-Real-IP para registrar la IP real en la bitácora.
+DETRAS_DE_PROXY = env_bool("DJANGO_DETRAS_DE_PROXY", False)
+
 # Cabeceras que aplican siempre.
 X_FRAME_OPTIONS = "DENY"
 SECURE_CONTENT_TYPE_NOSNIFF = True

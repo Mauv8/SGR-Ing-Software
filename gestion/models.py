@@ -646,6 +646,15 @@ class CambioEstado(models.Model):
 # Bitácora de auditoría (RNF-008, Ley 21.459)
 # ---------------------------------------------------------------------------
 
+def ip_de(request):
+    """IP del cliente. Detrás de Nginx la entrega la cabecera X-Real-IP."""
+    if request is None:
+        return None
+    if settings.DETRAS_DE_PROXY:
+        return request.META.get("HTTP_X_REAL_IP") or request.META.get("REMOTE_ADDR")
+    return request.META.get("REMOTE_ADDR")
+
+
 class RegistroAuditoria(models.Model):
     """Traza de las operaciones críticas: quién, qué, cuándo y desde dónde.
 
@@ -687,5 +696,5 @@ class RegistroAuditoria(models.Model):
             entidad=objeto.__class__.__name__ if objeto is not None else "",
             identificador=str(getattr(objeto, "codigo", None) or getattr(objeto, "pk", "") or ""),
             detalle=detalle[:300],
-            ip=request.META.get("REMOTE_ADDR") if request else None,
+            ip=ip_de(request),
         )
