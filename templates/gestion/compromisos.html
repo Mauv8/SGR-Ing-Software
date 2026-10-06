@@ -11,14 +11,14 @@
   <button type="submit">Filtrar</button>
   {% if user.rol == "FUNCIONARIO" or user.rol == "COORDINADOR" %}<a class="boton secundario" href="{% url 'compromiso_nuevo' %}">Nuevo compromiso</a>{% endif %}
 </form>
-<div class="tabla"><table>
+<div class="tabla"><table class="apilable">
   <thead><tr><th scope="col">N°</th><th scope="col">Solicitante</th><th scope="col">Territorio</th><th scope="col">Responsable</th><th scope="col">Fecha</th><th scope="col">Estado</th></tr></thead>
   <tbody>
   {% for c in compromisos %}
-    <tr class="{% if c.vencido %}vencido{% endif %}"><td><a href="{% url 'compromiso_detalle' c.pk %}">C-{{ c.pk }}</a></td>
-      <td>{{ c.solicitante }}</td><td>{{ c.territorio }}</td><td>{{ c.responsable.get_full_name }}</td>
-      <td>{{ c.fecha_comprometida|date:"d-m-Y" }}</td>
-      <td><span class="etiqueta">{{ c.get_estado_display }}</span>{% if c.vencido %} <span class="etiqueta vencido">Vencido</span>{% endif %}</td></tr>
+    <tr class="{% if c.vencido %}vencido{% endif %}"><td data-label="N°"><a href="{% url 'compromiso_detalle' c.pk %}">C-{{ c.pk }}</a></td>
+      <td data-label="Solicitante">{{ c.solicitante }}</td><td data-label="Territorio">{{ c.territorio }}</td><td data-label="Responsable">{{ c.responsable.get_full_name }}</td>
+      <td data-label="Fecha">{{ c.fecha_comprometida|date:"d-m-Y" }}</td>
+      <td data-label="Estado"><span class="etiqueta">{{ c.get_estado_display }}</span>{% if c.vencido %} <span class="etiqueta vencido">Vencido</span>{% endif %}</td></tr>
   {% empty %}<tr><td colspan="6">No hay compromisos para este filtro.</td></tr>{% endfor %}
   </tbody>
 </table></div>

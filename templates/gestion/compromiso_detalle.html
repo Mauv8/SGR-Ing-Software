@@ -26,12 +26,12 @@
 </div>
 {% endif %}
 <h2>Historial</h2>
-<div class="tabla"><table>
+<div class="tabla"><table class="apilable">
   <thead><tr><th scope="col">Fecha</th><th scope="col">Anterior</th><th scope="col">Nuevo</th><th scope="col">Autor</th><th scope="col">Observación</th></tr></thead>
   <tbody>
   {% for h in historial %}
-    <tr><td>{{ h.fecha|date:"d-m-Y H:i" }}</td><td>{{ h.get_estado_anterior_display }}</td><td>{{ h.get_estado_nuevo_display }}</td>
-      <td>{{ h.autor.get_full_name }}</td><td>{{ h.observacion }}</td></tr>
+    <tr><td data-label="Fecha">{{ h.fecha|date:"d-m-Y H:i" }}</td><td data-label="Anterior">{{ h.get_estado_anterior_display }}</td><td data-label="Nuevo">{{ h.get_estado_nuevo_display }}</td>
+      <td data-label="Autor">{{ h.autor.get_full_name }}</td><td data-label="Observación">{{ h.observacion }}</td></tr>
   {% empty %}<tr><td colspan="5">Sin cambios de estado.</td></tr>{% endfor %}
   </tbody>
 </table></div>

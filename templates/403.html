@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block titulo %}Acceso denegado{% endblock %}
+{% block contenido %}
+<div class="panel">
+  <h1>Acceso denegado</h1>
+  <p>Su rol{% if user.is_authenticated %} ({{ user.get_rol_display }}){% endif %} no tiene permiso para esta operación. El intento quedó registrado.</p>
+  <p>Si cree que necesita este acceso, solicítelo al administrador del sistema.</p>
+  <a class="boton" href="{% url 'inicio' %}">Volver al inicio</a>
+</div>
+{% endblock %}

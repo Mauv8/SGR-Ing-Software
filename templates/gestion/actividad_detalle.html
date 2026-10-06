@@ -15,12 +15,12 @@
   </dl>
 </div>
 <h2>Evidencias</h2>
-<div class="tabla"><table>
+<div class="tabla"><table class="apilable">
   <thead><tr><th scope="col">Código</th><th scope="col">Subida</th><th scope="col">Estado</th><th scope="col">Observación</th><th scope="col">Archivo</th></tr></thead>
   <tbody>
   {% for e in evidencias %}
-    <tr><td>{{ e.codigo }}</td><td>{{ e.subida_en|date:"d-m-Y H:i" }}</td><td>{{ e.get_estado_display }}</td>
-      <td>{{ e.observacion|default:"—" }}</td><td><a href="{% url 'evidencia_archivo' e.pk %}">Ver imagen</a></td></tr>
+    <tr><td data-label="Código">{{ e.codigo }}</td><td data-label="Subida">{{ e.subida_en|date:"d-m-Y H:i" }}</td><td data-label="Estado">{{ e.get_estado_display }}</td>
+      <td data-label="Observación">{{ e.observacion|default:"—" }}</td><td data-label="Archivo"><a href="{% url 'evidencia_archivo' e.pk %}">Ver imagen</a></td></tr>
   {% empty %}<tr><td colspan="5">Esta actividad todavía no tiene evidencias.</td></tr>{% endfor %}
   </tbody>
 </table></div>

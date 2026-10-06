@@ -66,3 +66,13 @@ dl.ficha dt { font-weight: 600; color: var(--suave); }
 }
 .foto-evidencia { max-width: 100%; max-height: 360px; }
 select.corto { max-width: 220px; }
+/* En pantallas angostas cada fila de tabla se muestra como una ficha, para
+   que ninguna columna quede oculta fuera de la pantalla. */
+@media (max-width: 640px) {
+  table.apilable thead { position: absolute; left: -9999px; }
+  table.apilable tr { display: block; border-bottom: 2px solid var(--borde); padding: 6px 0; }
+  table.apilable td { display: grid; grid-template-columns: 120px 1fr; gap: 8px; border: 0; padding: 4px 8px; }
+  table.apilable td::before { content: attr(data-label); font-weight: 600; color: var(--suave); }
+  table.apilable td[colspan] { display: block; }
+  table.apilable td[colspan]::before { content: none; }
+}

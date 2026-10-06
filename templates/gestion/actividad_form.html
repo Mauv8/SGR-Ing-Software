@@ -3,7 +3,7 @@
 {% block contenido %}
 <h1>Registrar actividad</h1>
 <div class="panel">
-  <p>Cargo: <strong>{{ user.cargo }}</strong>. El código se genera automáticamente al guardar.</p>
+  <p>Cargo: <strong>{{ user.cargo }}</strong> · El código se genera automáticamente al guardar.</p>
   <form method="post" novalidate>
     {% csrf_token %}
     {% include "gestion/_campos.html" %}

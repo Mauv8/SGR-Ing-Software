@@ -314,3 +314,25 @@ class FlujoCompletoTests(BaseSprint):
         self.entrar(self.funcionario)
         r = self.client.get(reverse("inicio"))
         self.assertEqual(r.context["avance"], 2)
+
+
+# ---------------------------------------------------------------------------
+# Usabilidad (verificable de forma automática)
+# ---------------------------------------------------------------------------
+
+class UsabilidadTests(BaseSprint):
+
+    def test_cp30_acceso_denegado_explica_y_ofrece_salida(self):
+        """CP-30 Usabilidad: la página de acceso denegado está en español y permite volver."""
+        self.entrar(self.funcionario)
+        r = self.client.get(reverse("verificacion"))
+        self.assertContains(r, "Acceso denegado", status_code=403)
+        self.assertContains(r, reverse("inicio"), status_code=403)
+
+    def test_cp31_tablas_adaptables_a_pantallas_angostas(self):
+        """CP-31 Usabilidad: las tablas de listados usan el diseño apilable en móvil."""
+        self.crear_compromiso()
+        self.entrar(self.funcionario)
+        r = self.client.get(reverse("compromisos"))
+        self.assertContains(r, 'class="apilable"')
+        self.assertContains(r, 'data-label="Estado"')
