@@ -1,0 +1,32 @@
+## bandit (análisis estático)
+Run started:2026-10-06 03:07:29.826263+00:00
+
+Test results:
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'clave-solo-para-desarrollo-local'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b105_hardcoded_password_string.html
+   Location: config/settings.py:36:21
+35	if not DEBUG:
+36	    if SECRET_KEY == "clave-solo-para-desarrollo-local":
+37	        raise RuntimeError(
+
+--------------------------------------------------
+
+Code scanned:
+	Total lines of code: 1074
+	Total lines skipped (#nosec): 0
+	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0
+		Low: 1
+		Medium: 0
+		High: 0
+	Total issues (by confidence):
+		Undefined: 0
+		Low: 0
+		Medium: 1
+		High: 0
+Files skipped (0):

@@ -1,0 +1,12 @@
+## pip-audit (componentes vulnerables)
+Found 8 known vulnerabilities in 1 package
+Name   Version ID              Fix Versions
+------ ------- --------------- ------------
+django 5.1.15  PYSEC-2026-198  5.2.15,6.0.6
+django 5.1.15  PYSEC-2026-199  5.2.15,6.0.6
+django 5.1.15  PYSEC-2026-201  5.2.15,6.0.6
+django 5.1.15  PYSEC-2026-2090 5.2.16,6.0.7
+django 5.1.15  PYSEC-2026-2091 5.2.16,6.0.7
+django 5.1.15  PYSEC-2026-2092 5.2.16,6.0.7
+django 5.1.15  PYSEC-2026-3717 5.2.17,6.0.8
+django 5.1.15  PYSEC-2026-4035 5.2.17,6.0.8

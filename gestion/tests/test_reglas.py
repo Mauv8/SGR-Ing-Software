@@ -13,7 +13,7 @@ from datetime import date, timedelta
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from .models import (
+from gestion.models import (
     Actividad, Cargo, Correlativo, Delegacion, ItemMedicion, Periodo, Usuario,
 )
 
