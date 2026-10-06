@@ -1,10 +1,19 @@
+{% comment %}Piezas 01-04 y 09 del kit: cada campo en un .campo; el error va pegado bajo el campo.{% endcomment %}
 {% if form.non_field_errors %}<div class="mensaje error" role="alert">{% for e in form.non_field_errors %}{{ e }} {% endfor %}No se guardó el registro.</div>{% endif %}
 {% if form.errors and not form.non_field_errors %}<div class="mensaje error" role="alert">Revise {{ form.errors|length }} campo(s) marcado(s). No se guardó el registro; lo ya ingresado se conserva.</div>{% endif %}
 {% for campo in form %}
-<p>
-  {{ campo.label_tag }}
+{% if campo.widget_type == "radioselect" %}
+<fieldset class="grupo-opciones{% if campo.errors %} con-error{% endif %}">
+  <legend>{{ campo.label }}</legend>
   {{ campo }}
-  {% if campo.help_text %}<span class="helptext">{{ campo.help_text }}</span>{% endif %}
   {{ campo.errors }}
-</p>
+</fieldset>
+{% else %}
+<div class="campo{% if campo.errors %} con-error{% endif %}">
+  <label for="{{ campo.id_for_label }}">{{ campo.label }}{% if campo.field.required %}*{% endif %}</label>
+  {{ campo }}
+  {% if campo.help_text %}<span class="ayuda">{{ campo.help_text }}</span>{% endif %}
+  {{ campo.errors }}
+</div>
+{% endif %}
 {% endfor %}

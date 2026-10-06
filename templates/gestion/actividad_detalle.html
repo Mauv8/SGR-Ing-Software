@@ -15,11 +15,11 @@
   </dl>
 </div>
 <h2>Evidencias</h2>
-<div class="tabla"><table class="apilable">
+<div class="tabla-contenedor"><table class="apilable">
   <thead><tr><th scope="col">Código</th><th scope="col">Subida</th><th scope="col">Estado</th><th scope="col">Observación</th><th scope="col">Archivo</th></tr></thead>
   <tbody>
   {% for e in evidencias %}
-    <tr><td data-label="Código">{{ e.codigo }}</td><td data-label="Subida">{{ e.subida_en|date:"d-m-Y H:i" }}</td><td data-label="Estado">{{ e.get_estado_display }}</td>
+    <tr><td data-label="Código" class="codigo">{{ e.codigo }}</td><td data-label="Subida">{{ e.subida_en|date:"d-m-Y H:i" }}</td><td data-label="Estado">{{ e.get_estado_display }}</td>
       <td data-label="Observación">{{ e.observacion|default:"—" }}</td><td data-label="Archivo"><a href="{% url 'evidencia_archivo' e.pk %}">Ver imagen</a></td></tr>
   {% empty %}<tr><td colspan="5">Esta actividad todavía no tiene evidencias.</td></tr>{% endfor %}
   </tbody>
@@ -29,8 +29,8 @@
   <h2>Adjuntar evidencia fotográfica</h2>
   <form method="post" action="{% url 'evidencia_subir' actividad.pk %}" enctype="multipart/form-data">
     {% csrf_token %}
-    <p><label for="id_archivo">Fotografía (JPG o PNG, máximo 5 MB)</label>{{ form.archivo }}</p>
-    <button type="submit">Enviar a revisión</button>
+    <div class="campo"><label for="id_archivo">Fotografía (JPG o PNG, máximo 5 MB)*</label>{{ form.archivo }}</div>
+    <div class="botonera"><button type="submit" class="boton-primario">Enviar a revisión</button></div>
   </form>
 </div>
 {% endif %}

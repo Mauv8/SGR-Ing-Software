@@ -1,78 +1,191 @@
-/* Estilos del prototipo SGR: simples, legibles y adaptables a tablet y PC. */
+/*
+ * SGR · estilos del prototipo según el «Kit de Componentes SGR».
+ *
+ * Las nueve piezas del kit (campo de texto, campo largo, desplegable, casilla,
+ * botón primario, botón secundario, tabla, modal y mensaje de validación) y el
+ * semáforo se definen aquí una sola vez. Ninguna plantilla debe traer
+ * atributos style= propios: si falta algo, se agrega al kit y a este archivo.
+ *
+ * Desviaciones declaradas respecto del kit:
+ *  D-K1  Texto de ayuda y encabezados de tabla en #667077 en lugar de #8E989E:
+ *        #8E989E da 2,87:1 sobre #FCFCFD y no cumple WCAG AA (4,5:1).
+ *  D-K2  En pantallas angostas la tabla se muestra como fichas apiladas en vez
+ *        de desplazarse de lado: el desplazamiento ocultaba la columna Estado
+ *        (deficiencia U-02, prueba CP-31).
+ *  D-K3  Mensaje de validación en rojo (ya declarada en el kit).
+ */
+
 :root {
-  --fondo: #f4f6f8; --panel: #ffffff; --texto: #1d2733; --suave: #55606e;
-  --borde: #d0d6dd; --primario: #0b5cad; --primario-osc: #084683;
-  --ok: #1e7b34; --ok-fondo: #e3f3e7; --error: #b3261e; --error-fondo: #fbe9e7;
-  --alerta: #8a5a00; --alerta-fondo: #fff4d6;
+  /* Paleta: siete grises del kit */
+  --claro: #FCFCFD;          /* superficies */
+  --sutil: #F0F2F3;          /* cabecera de tabla, fondo de página */
+  --relleno: #E9ECEE;        /* relleno de campo */
+  --borde-campo: #B8C0C5;    /* borde de campo, separador de filas */
+  --borde-sec: #98A2A8;      /* borde secundario, chevron, casilla */
+  --ayuda: #667077;          /* texto de ayuda (D-K1; el kit indica #8E989E) */
+  --texto: #4E5960;          /* texto y botón primario */
+
+  /* Color con significado: semáforo y error */
+  --verde: #1B7A47;  --verde-fondo: #E4F0E9;
+  --ambar: #C07708;  --ambar-fondo: #F8EFDE;
+  --rojo: #B23A2B;   --rojo-fondo: #F6E7E4;
+
+  /* Medidas del kit */
+  --alto-control: 36px;
+  --radio: 3px;
+  --radio-modal: 4px;
+  --sep-etiqueta: 5px;
+  --sep-campos: 14px;
+  --sep-botones: 10px;
 }
+
 * { box-sizing: border-box; }
-body { margin: 0; font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
-  font-size: 16px; line-height: 1.5; color: var(--texto); background: var(--fondo); }
-a { color: var(--primario); }
-a:focus, button:focus, input:focus, select:focus, textarea:focus {
-  outline: 3px solid #ffbf47; outline-offset: 2px; }
-.saltar { position: absolute; left: -999px; }
-.saltar:focus { left: 8px; top: 8px; background: #fff; padding: 8px; z-index: 10; }
-header.barra { background: var(--primario); color: #fff; padding: 12px 16px;
-  display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; justify-content: space-between; }
-header.barra a { color: #fff; text-decoration: none; font-weight: 600; }
-header.barra nav { display: flex; flex-wrap: wrap; gap: 4px 16px; }
-header.barra nav a { padding: 6px 4px; }
-.usuario { font-size: 14px; }
-.usuario form { display: inline; }
-.usuario button { background: none; border: 1px solid #fff; color: #fff; border-radius: 4px;
-  padding: 4px 10px; cursor: pointer; margin-left: 8px; }
-main { max-width: 1000px; margin: 0 auto; padding: 16px; }
-h1 { font-size: 1.6rem; margin: 8px 0 16px; }
-h2 { font-size: 1.2rem; margin-top: 24px; }
-.panel { background: var(--panel); border: 1px solid var(--borde); border-radius: 8px;
-  padding: 16px; margin-bottom: 16px; }
-.tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
-.tarjeta { background: var(--panel); border: 1px solid var(--borde); border-radius: 8px; padding: 16px; }
-.tarjeta .cifra { font-size: 2rem; font-weight: 700; }
-.tabla { width: 100%; overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; background: var(--panel); }
-th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--borde); vertical-align: top; }
-th { background: #e9edf1; font-size: 14px; }
-tr.vencido td { background: var(--error-fondo); }
-.etiqueta { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 13px;
-  background: #e9edf1; }
-.etiqueta.vencido { background: var(--error); color: #fff; }
-form p { margin: 0 0 12px; }
-label { display: block; font-weight: 600; margin-bottom: 4px; }
-input[type=text], input[type=password], input[type=date], input[type=number], input[type=search],
-select, textarea { width: 100%; max-width: 520px; padding: 10px; font-size: 16px;
-  border: 1px solid #8a94a0; border-radius: 6px; background: #fff; }
-input[type=radio] { margin-right: 6px; }
-.boton, button[type=submit] { display: inline-block; background: var(--primario); color: #fff;
-  border: 0; border-radius: 6px; padding: 10px 18px; font-size: 16px; cursor: pointer;
-  text-decoration: none; min-height: 44px; }
-.boton:hover, button[type=submit]:hover { background: var(--primario-osc); }
-.boton.secundario { background: #fff; color: var(--primario); border: 1px solid var(--primario); }
-.errorlist { color: var(--error); margin: 4px 0; padding-left: 18px; }
-.helptext { display: block; color: var(--suave); font-size: 14px; }
-.mensaje { padding: 12px 16px; border-radius: 6px; margin-bottom: 12px; }
-.mensaje.success { background: var(--ok-fondo); color: var(--ok); }
-.mensaje.error { background: var(--error-fondo); color: var(--error); }
-.mensaje.warning, .aviso { background: var(--alerta-fondo); color: var(--alerta);
-  padding: 12px 16px; border-radius: 6px; }
-.acciones { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; }
-.login { max-width: 420px; margin: 48px auto; }
-dl.ficha { display: grid; grid-template-columns: 180px 1fr; gap: 6px 12px; margin: 0; }
-dl.ficha dt { font-weight: 600; color: var(--suave); }
-@media (max-width: 640px) {
-  dl.ficha { grid-template-columns: 1fr; }
-  th, td { padding: 6px; font-size: 14px; }
+body {
+  margin: 0;
+  font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--texto);
+  background: var(--sutil);
 }
-.foto-evidencia { max-width: 100%; max-height: 360px; }
-select.corto { max-width: 220px; }
-/* En pantallas angostas cada fila de tabla se muestra como una ficha, para
-   que ninguna columna quede oculta fuera de la pantalla. */
+a { color: var(--texto); }
+:focus-visible { outline: 2px solid var(--texto); outline-offset: 2px; }
+.saltar { position: absolute; left: -999px; }
+.saltar:focus { left: 8px; top: 8px; background: var(--claro); padding: 8px; z-index: 10; }
+
+/* ---------------------------------------------------------------- estructura */
+header.barra {
+  background: var(--texto); color: var(--claro); padding: 10px 16px;
+  display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; justify-content: space-between;
+}
+header.barra a { color: var(--claro); text-decoration: none; font-weight: 600; }
+header.barra nav { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+header.barra nav a { padding: 6px 2px; }
+.usuario { font-size: 12px; }
+.usuario form { display: inline; }
+.usuario button {
+  background: none; border: 1px solid var(--claro); color: var(--claro);
+  border-radius: var(--radio); height: 28px; padding: 0 10px; margin-left: 8px; cursor: pointer;
+}
+main { max-width: 1000px; margin: 0 auto; padding: 16px; }
+h1 { font-size: 20px; margin: 8px 0 16px; }
+h2 { font-size: 15px; margin: 24px 0 10px; }
+.panel {
+  background: var(--claro); border: 1px solid var(--borde-campo);
+  border-radius: var(--radio); padding: 16px; margin-bottom: 16px;
+}
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.tarjeta { background: var(--claro); border: 1px solid var(--borde-campo); border-radius: var(--radio); padding: 16px; }
+.tarjeta .cifra { font-size: 28px; font-weight: 700; }
+.tarjeta small { color: var(--ayuda); }
+.login { max-width: 400px; margin: 48px auto; }
+dl.ficha { display: grid; grid-template-columns: 170px 1fr; gap: 6px 12px; margin: 0; }
+dl.ficha dt { font-weight: 600; font-size: 12px; color: var(--ayuda); }
+dl.ficha dd { margin: 0; }
+.ayuda { color: var(--ayuda); font-size: 12px; }
+
+/* ---------------------------------------------- 01 · 02 · 03  campos y desplegable */
+.campo { margin-bottom: var(--sep-campos); }
+.campo label, .grupo-opciones legend {
+  display: block; font-size: 12px; font-weight: 600; color: var(--texto);
+  margin-bottom: var(--sep-etiqueta); padding: 0;
+}
+.campo input[type=text], .campo input[type=password], .campo input[type=date],
+.campo input[type=number], .campo input[type=search], .campo select, .campo textarea,
+input.control, select.control {
+  width: 100%; max-width: 480px; height: var(--alto-control);
+  padding: 0 10px; font: inherit; font-size: 13px; color: var(--texto);
+  background: var(--relleno); border: 1px solid var(--borde-campo); border-radius: var(--radio);
+}
+.campo textarea { height: 72px; padding: 8px 10px; resize: vertical; }
+.campo select, select.control {
+  appearance: none; padding-right: 32px;
+  background-image: url("../img/chevron.svg"); /* archivo propio: la CSP no admite imágenes data: */
+  background-repeat: no-repeat; background-position: right 10px center; background-size: 12px;
+}
+::placeholder { color: var(--ayuda); opacity: 1; }
+.campo .ayuda { display: block; margin-top: 4px; }
+.campo input[type=file] { font-size: 13px; }
+
+/* ---------------------------------------------------------------- 04 · casilla */
+.casilla, .grupo-opciones label { display: flex; align-items: center; gap: 9px; font-size: 13px; }
+.casilla input[type=checkbox], .grupo-opciones input[type=radio] {
+  width: 16px; height: 16px; margin: 0; accent-color: var(--texto);
+}
+.grupo-opciones { border: 0; margin: 0 0 var(--sep-campos); padding: 0; }
+.grupo-opciones > div { display: grid; gap: 8px; }
+.grupo-opciones > div label { font-weight: 400; margin: 0; }
+
+/* -------------------------------------------- 05 · 06  botón primario y secundario */
+.botonera select.control, .botonera input.control { width: auto; min-width: 220px; }
+.botonera { display: flex; flex-wrap: wrap; gap: var(--sep-botones); align-items: center; margin: 12px 0; }
+.boton-primario, .boton-secundario {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: var(--alto-control); padding: 0 16px; border-radius: var(--radio);
+  font: inherit; font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer;
+}
+.boton-primario { background: var(--texto); color: var(--claro); border: 0; }
+.boton-primario:hover { background: #3E474D; }
+.boton-secundario { background: var(--claro); color: var(--texto); border: 1px solid var(--borde-sec); }
+.boton-secundario:hover { background: var(--sutil); }
+
+/* ---------------------------------------------------------------- 07 · tabla */
+.tabla-contenedor { width: 100%; }
+table { width: 100%; border-collapse: collapse; background: var(--claro); border: 1px solid var(--borde-campo); }
+th {
+  background: var(--sutil); color: var(--ayuda); font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .04em; text-align: left; padding: 8px;
+  border-bottom: 1px solid var(--borde-campo);
+}
+td { font-size: 12px; height: 30px; padding: 6px 8px; border-bottom: 1px solid var(--borde-campo); vertical-align: middle; }
+.codigo { font-family: ui-monospace, Consolas, "Courier New", monospace; }
+tr.vencido td { background: var(--rojo-fondo); }
+
+/* D-K2: en pantallas angostas cada fila se muestra como ficha */
 @media (max-width: 640px) {
+  table.apilable { border: 0; background: none; }
   table.apilable thead { position: absolute; left: -9999px; }
-  table.apilable tr { display: block; border-bottom: 2px solid var(--borde); padding: 6px 0; }
-  table.apilable td { display: grid; grid-template-columns: 120px 1fr; gap: 8px; border: 0; padding: 4px 8px; }
-  table.apilable td::before { content: attr(data-label); font-weight: 600; color: var(--suave); }
+  table.apilable tr { display: block; background: var(--claro); border: 1px solid var(--borde-campo); border-radius: var(--radio); margin-bottom: 8px; padding: 4px 0; }
+  table.apilable td { display: grid; grid-template-columns: 110px 1fr; gap: 8px; height: auto; border: 0; padding: 4px 10px; }
+  table.apilable td::before { content: attr(data-label); font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--ayuda); }
+  table.apilable td > * { justify-self: start; }
   table.apilable td[colspan] { display: block; }
   table.apilable td[colspan]::before { content: none; }
+  dl.ficha { grid-template-columns: 1fr; }
 }
+
+/* ---------------------------------------------------------------- 08 · modal */
+.modal {
+  max-width: 400px; background: var(--claro); border: 1px solid var(--borde-sec);
+  border-radius: var(--radio-modal); padding: 16px; margin-bottom: 16px;
+}
+.modal h2 { font-size: 14px; font-weight: 700; margin: 0 0 8px; }
+.modal p { font-size: 12.5px; margin: 0 0 12px; }
+.modal .botonera { justify-content: flex-end; margin-bottom: 0; }
+
+/* ---------------------------------------------- 09 · mensaje de validación (D-K3) */
+.campo.con-error input, .campo.con-error select, .campo.con-error textarea { border-color: var(--rojo); }
+.mensaje-validacion, ul.errorlist {
+  list-style: none; margin: var(--sep-etiqueta) 0 0; max-width: 480px;
+  padding: 6px 10px; font-size: 11px; color: var(--rojo); background: var(--rojo-fondo);
+  border-left: 3px solid var(--rojo); border-radius: 0 var(--radio) var(--radio) 0;
+}
+
+/* Avisos generales (mismos colores con significado) */
+.mensaje { padding: 10px 12px; border-radius: var(--radio); margin-bottom: 12px; border-left: 3px solid; }
+.mensaje.success { background: var(--verde-fondo); color: var(--verde); }
+.mensaje.error { background: var(--rojo-fondo); color: var(--rojo); }
+.aviso { background: var(--claro); color: var(--texto); border: 1px solid var(--borde-campo); border-left: 3px solid var(--borde-sec); padding: 10px 12px; border-radius: var(--radio); }
+
+/* ---------------------------------------------------------------- semáforo */
+.semaforo, .etiqueta {
+  display: inline-block; padding: 2px 8px; border-radius: 10px;
+  font-size: 11px; font-weight: 600; background: var(--sutil); color: var(--texto);
+}
+.semaforo.verde { background: var(--verde-fondo); color: var(--verde); }
+.semaforo.ambar { background: var(--ambar-fondo); color: var(--ambar); }
+.semaforo.rojo { background: var(--rojo-fondo); color: var(--rojo); }
+/* «Vencido» va sobre una fila ya teñida de rojo: se invierte para que se distinga. */
+.etiqueta.vencido { background: var(--rojo); color: var(--claro); }
+
+.foto-evidencia { max-width: 100%; max-height: 360px; border: 1px solid var(--borde-campo); border-radius: var(--radio); }

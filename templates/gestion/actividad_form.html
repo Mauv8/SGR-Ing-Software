@@ -7,8 +7,8 @@
   <form method="post" novalidate>
     {% csrf_token %}
     {% include "gestion/_campos.html" %}
-    <div class="acciones"><button type="submit">Guardar actividad</button>
-      <a class="boton secundario" href="{% url 'actividades' %}">Cancelar</a></div>
+    <div class="botonera"><button type="submit" class="boton-primario">Guardar actividad</button>
+      <a class="boton-secundario" href="{% url 'actividades' %}">Cancelar</a></div>
   </form>
 </div>
 {% endblock %}

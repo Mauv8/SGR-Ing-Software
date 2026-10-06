@@ -16,17 +16,18 @@
   </dl>
 </div>
 {% if form %}
-<div class="panel">
-  <h2>Cambiar estado a «{{ siguiente }}»</h2>
+<div class="modal" role="region" aria-labelledby="titulo-cambio">
+  <h2 id="titulo-cambio">Cambiar estado del compromiso</h2>
+  <p>El estado pasará de «{{ compromiso.get_estado_display }}» a «{{ siguiente }}» y quedará registrado con su nombre y la fecha.</p>
   <form method="post">
     {% csrf_token %}
     {% include "gestion/_campos.html" %}
-    <button type="submit">Confirmar cambio</button>
+    <div class="botonera"><button type="submit" class="boton-primario">Confirmar cambio</button></div>
   </form>
 </div>
 {% endif %}
 <h2>Historial</h2>
-<div class="tabla"><table class="apilable">
+<div class="tabla-contenedor"><table class="apilable">
   <thead><tr><th scope="col">Fecha</th><th scope="col">Anterior</th><th scope="col">Nuevo</th><th scope="col">Autor</th><th scope="col">Observación</th></tr></thead>
   <tbody>
   {% for h in historial %}

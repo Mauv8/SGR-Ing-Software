@@ -15,7 +15,7 @@
   <form method="post">
     {% csrf_token %}
     {% include "gestion/_campos.html" %}
-    <button type="submit">Guardar decisión</button>
+    <div class="botonera"><button type="submit" class="boton-primario">Guardar decisión</button></div>
   </form>
 </div>
 {% endif %}

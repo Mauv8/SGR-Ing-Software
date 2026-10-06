@@ -3,21 +3,21 @@
 {% block contenido %}
 <h1>Verificación de evidencias</h1>
 <h2>Pendientes</h2>
-<div class="tabla"><table class="apilable">
+<div class="tabla-contenedor"><table class="apilable">
   <thead><tr><th scope="col">Evidencia</th><th scope="col">Actividad</th><th scope="col">Funcionario</th><th scope="col">Subida</th><th scope="col"></th></tr></thead>
   <tbody>
   {% for e in pendientes %}
-    <tr><td data-label="Evidencia">{{ e.codigo }}</td><td data-label="Actividad">{{ e.actividad.accion }}</td><td data-label="Funcionario">{{ e.subida_por.get_full_name }}</td>
-      <td data-label="Subida">{{ e.subida_en|date:"d-m-Y H:i" }}</td><td data-label="Acción"><a class="boton" href="{% url 'verificacion_decidir' e.pk %}">Revisar</a></td></tr>
+    <tr><td data-label="Evidencia" class="codigo">{{ e.codigo }}</td><td data-label="Actividad">{{ e.actividad.accion }}</td><td data-label="Funcionario">{{ e.subida_por.get_full_name }}</td>
+      <td data-label="Subida">{{ e.subida_en|date:"d-m-Y H:i" }}</td><td data-label="Acción"><a class="boton-primario" href="{% url 'verificacion_decidir' e.pk %}">Revisar</a></td></tr>
   {% empty %}<tr><td colspan="5">No hay evidencias pendientes.</td></tr>{% endfor %}
   </tbody>
 </table></div>
 <h2>Revisadas recientemente</h2>
-<div class="tabla"><table class="apilable">
+<div class="tabla-contenedor"><table class="apilable">
   <thead><tr><th scope="col">Evidencia</th><th scope="col">Decisión</th><th scope="col">Verificador</th><th scope="col">Fecha</th><th scope="col">Observación</th></tr></thead>
   <tbody>
   {% for e in revisadas %}
-    <tr><td data-label="Evidencia">{{ e.codigo }}</td><td data-label="Decisión">{{ e.get_estado_display }}</td><td data-label="Verificador">{{ e.verificador.get_full_name }}</td>
+    <tr><td data-label="Evidencia" class="codigo">{{ e.codigo }}</td><td data-label="Decisión">{{ e.get_estado_display }}</td><td data-label="Verificador">{{ e.verificador.get_full_name }}</td>
       <td data-label="Fecha">{{ e.revisada_en|date:"d-m-Y H:i" }}</td><td data-label="Observación">{{ e.observacion|default:"—" }}</td></tr>
   {% empty %}<tr><td colspan="5">Sin revisiones.</td></tr>{% endfor %}
   </tbody>

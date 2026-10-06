@@ -6,10 +6,10 @@
   {% if form.non_field_errors %}<div class="mensaje error" role="alert">{{ form.non_field_errors|join:" " }}</div>{% endif %}
   <form method="post">
     {% csrf_token %}
-    <p><label for="id_username">Usuario</label>{{ form.username }}</p>
-    <p><label for="id_password">Contraseña</label>{{ form.password }}</p>
+    <div class="campo"><label for="id_username">Usuario</label>{{ form.username }}</div>
+    <div class="campo"><label for="id_password">Contraseña</label>{{ form.password }}</div>
     <input type="hidden" name="next" value="{{ next }}">
-    <button type="submit">Ingresar</button>
+    <div class="botonera"><button type="submit" class="boton-primario">Ingresar</button></div>
   </form>
 </div>
 {% endblock %}

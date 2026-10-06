@@ -25,7 +25,7 @@ class ActividadForm(forms.ModelForm):
         fields = ["fecha", "item", "descripcion", "accion", "contacto", "telefono", "cantidad"]
         widgets = {
             "fecha": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
-            "descripcion": forms.Textarea(attrs={"rows": 3}),
+            "descripcion": forms.Textarea(attrs={"rows": 3, "placeholder": "Describa qué se hizo…"}),
         }
 
     def __init__(self, *args, usuario, **kwargs):

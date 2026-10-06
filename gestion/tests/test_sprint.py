@@ -336,3 +336,20 @@ class UsabilidadTests(BaseSprint):
         r = self.client.get(reverse("compromisos"))
         self.assertContains(r, 'class="apilable"')
         self.assertContains(r, 'data-label="Estado"')
+
+    def test_cp33_plantillas_sin_estilos_sueltos(self):
+        """CP-33 Kit de componentes: ninguna plantilla trae atributos style= propios."""
+        from pathlib import Path
+        from django.conf import settings
+        sueltos = [
+            str(p) for p in Path(settings.BASE_DIR, "templates").rglob("*.html")
+            if "style=" in p.read_text(encoding="utf-8")
+        ]
+        self.assertEqual(sueltos, [])
+
+    def test_cp34_formularios_usan_piezas_del_kit(self):
+        """CP-34 Kit de componentes: el registro usa .campo, .botonera y .boton-primario."""
+        self.entrar(self.funcionario)
+        r = self.client.get(reverse("actividad_nueva"))
+        for clase in ('class="campo', 'class="botonera"', 'class="boton-primario"', "Describa qué se hizo"):
+            self.assertContains(r, clase)
