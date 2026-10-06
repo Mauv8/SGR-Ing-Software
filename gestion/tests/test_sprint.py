@@ -353,3 +353,9 @@ class UsabilidadTests(BaseSprint):
         r = self.client.get(reverse("actividad_nueva"))
         for clase in ('class="campo', 'class="botonera"', 'class="boton-primario"', "Describa qué se hizo"):
             self.assertContains(r, clase)
+
+    def test_cp35_usuario_con_sesion_no_ve_el_login(self):
+        """CP-35 Usabilidad (U-03): con sesión iniciada, /ingresar/ lleva al inicio."""
+        self.entrar(self.funcionario)
+        r = self.client.get(reverse("login"))
+        self.assertRedirects(r, reverse("inicio"))

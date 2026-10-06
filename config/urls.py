@@ -14,6 +14,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("ingresar/", auth_views.LoginView.as_view(
         template_name="registration/login.html", authentication_form=LoginConBloqueoForm,
+        # U-03: quien ya tiene sesión no vuelve a ver el formulario de ingreso.
+        redirect_authenticated_user=True,
     ), name="login"),
     path("salir/", auth_views.LogoutView.as_view(), name="logout"),
     path("", include("gestion.urls")),
