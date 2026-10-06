@@ -54,6 +54,19 @@ Clave de todos: `Sgr.Demo.2026` (sólo desarrollo). Los datos son ficticios.
 | `mvega` | Verificador | Rural |
 | `avera` | Administrador (panel `/admin/`) | — |
 
+**Cuentas del equipo** (misma clave). Cada integrante tiene una cuenta por rol
+para poder recorrer el flujo completo: registrar, validar y auditar.
+
+| Integrante | Funcionario | Verificador | Administrador |
+|---|---|---|---|
+| Alejandra Campusano | `acampusano` | `acampusano.ver` | `acampusano.adm` |
+| Polette Henríquez | `phenriquez` | `phenriquez.ver` | `phenriquez.adm` |
+| Mauro Valdivia | `mvaldivia` | `mvaldivia.ver` | `mvaldivia.adm` |
+
+Las cuentas de funcionario y verificador pertenecen a la Delegación Rural. Un
+verificador no puede aprobar evidencias que él mismo subió, por eso son
+cuentas distintas.
+
 ### Con PostgreSQL (base de datos del proyecto)
 
 1. Instalar PostgreSQL 16 y crear la base:

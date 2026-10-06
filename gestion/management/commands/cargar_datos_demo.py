@@ -95,6 +95,21 @@ class Command(BaseCommand):
             ("mvega", "Marcela", "Vega", Usuario.VERIFICADOR, rural, None),
             ("avera", "Andrea", "Vera", Usuario.ADMINISTRADOR, None, None),
         ]
+        # Cuentas del equipo de desarrollo: una por rol para cada integrante,
+        # de modo que cada uno pueda recorrer el flujo completo con su nombre
+        # (registrar, validar y auditar). Comparten la clave de prueba.
+        equipo = [
+            ("acampusano", "Alejandra", "Campusano"),
+            ("phenriquez", "Polette", "Henríquez"),
+            ("mvaldivia", "Mauro", "Valdivia"),
+        ]
+        for base, nombre, apellido in equipo:
+            personas += [
+                (base, nombre, apellido, Usuario.FUNCIONARIO, rural, territorial),
+                (f"{base}.ver", nombre, apellido, Usuario.VERIFICADOR, rural, None),
+                (f"{base}.adm", nombre, apellido, Usuario.ADMINISTRADOR, None, None),
+            ]
+
         creados = 0
         for username, nombre, apellido, rol, delegacion, cargo in personas:
             if Usuario.objects.filter(username=username).exists():
@@ -104,7 +119,7 @@ class Command(BaseCommand):
                 password=CLAVE_DEMO,
                 first_name=nombre,
                 last_name=apellido,
-                email=f"{username}@ejemplo.cl",
+                email=f"{username.split('.')[0]}@ejemplo.cl",
                 rol=rol,
                 delegacion=delegacion,
                 cargo=cargo,
