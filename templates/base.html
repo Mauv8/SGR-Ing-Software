@@ -1,0 +1,31 @@
+{% load static %}<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}SGR{% endblock %} · Sistema de Gestión de Resultados</title>
+  <link rel="stylesheet" href="{% static 'css/sgr.css' %}">
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  {% if user.is_authenticated %}
+  <header class="barra">
+    <a href="{% url 'inicio' %}">SGR</a>
+    <nav aria-label="Menú principal">
+      <a href="{% url 'actividades' %}">Actividades</a>
+      <a href="{% url 'compromisos' %}">Agenda de compromisos</a>
+      {% if user.rol == "VERIFICADOR" %}<a href="{% url 'verificacion' %}">Verificación</a>{% endif %}
+      {% if user.is_staff %}<a href="{% url 'admin:index' %}">Administración</a>{% endif %}
+    </nav>
+    <div class="usuario">
+      {{ user.get_full_name|default:user.username }} · {{ user.get_rol_display }}{% if user.delegacion %} · {{ user.delegacion }}{% endif %}
+      <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit">Salir</button></form>
+    </div>
+  </header>
+  {% endif %}
+  <main id="contenido">
+    {% for m in messages %}<div class="mensaje {{ m.tags }}" role="status">{{ m }}</div>{% endfor %}
+    {% block contenido %}{% endblock %}
+  </main>
+</body>
+</html>

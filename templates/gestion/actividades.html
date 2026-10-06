@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block titulo %}Actividades{% endblock %}
+{% block contenido %}
+<h1>Actividades</h1>
+<p class="aviso">Se muestran sólo las actividades de su ámbito ({{ user.get_rol_display }}{% if user.delegacion %}, {{ user.delegacion }}{% endif %}). Avance aprobado: <strong>{{ avance }}</strong>.</p>
+<form method="get" class="acciones" role="search">
+  <label for="q" class="saltar">Buscar</label>
+  <input type="search" id="q" name="q" value="{{ buscar }}" placeholder="Buscar por código o acción">
+  <button type="submit">Buscar</button>
+  {% if user.rol == "FUNCIONARIO" %}<a class="boton secundario" href="{% url 'actividad_nueva' %}">Registrar actividad</a>{% endif %}
+</form>
+<div class="tabla">
+<table>
+  <thead><tr><th scope="col">Código</th><th scope="col">Fecha</th><th scope="col">Funcionario</th><th scope="col">Ítem</th><th scope="col">Acción</th><th scope="col">Evidencia</th></tr></thead>
+  <tbody>
+  {% for a in actividades %}
+    <tr><td><a href="{% url 'actividad_detalle' a.pk %}">{{ a.codigo }}</a></td><td>{{ a.fecha|date:"d-m-Y" }}</td>
+      <td>{{ a.funcionario.get_full_name }}</td><td>{{ a.item.nombre }}</td><td>{{ a.accion }}</td><td>{{ a.estado_evidencia }}</td></tr>
+  {% empty %}
+    <tr><td colspan="6">No hay actividades que coincidan{% if buscar %} con «{{ buscar }}»{% endif %}. Puede cambiar el criterio de búsqueda.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

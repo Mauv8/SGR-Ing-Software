@@ -121,9 +121,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-LOGIN_URL = "/admin/login/"  # se ajusta al construir la autenticación
-LOGIN_REDIRECT_URL = "/"  # se ajusta al construir las vistas
-LOGOUT_REDIRECT_URL = "/"
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "inicio"
+LOGOUT_REDIRECT_URL = "login"
 
 # La sesión caduca a las dos horas y se renueva con cada petición.
 SESSION_COOKIE_AGE = 2 * 60 * 60
@@ -147,6 +147,10 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [BASE_DIR / "static"] if (BASE_DIR / "static").exists() else []
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# Evidencias: se guardan fuera de la carpeta pública y sólo se entregan por la
+# vista `evidencia_archivo`, que revisa permisos. No se define MEDIA_URL.
+MEDIA_ROOT = BASE_DIR / "evidencias_privadas"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

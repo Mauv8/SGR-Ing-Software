@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block titulo %}Nuevo compromiso{% endblock %}
+{% block contenido %}
+<h1>Nuevo compromiso</h1>
+<div class="panel">
+  <p>Se registrará en la agenda de <strong>{{ user.delegacion }}</strong> con estado <strong>Ingresado</strong>.</p>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% include "gestion/_campos.html" %}
+    <div class="acciones"><button type="submit">Guardar compromiso</button>
+      <a class="boton secundario" href="{% url 'compromisos' %}">Cancelar</a></div>
+  </form>
+</div>
+{% endblock %}

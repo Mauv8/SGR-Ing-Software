@@ -1,0 +1,66 @@
+/* Estilos del prototipo SGR: simples, legibles y adaptables a tablet y PC. */
+:root {
+  --fondo: #f4f6f8; --panel: #ffffff; --texto: #1d2733; --suave: #55606e;
+  --borde: #d0d6dd; --primario: #0b5cad; --primario-osc: #084683;
+  --ok: #1e7b34; --ok-fondo: #e3f3e7; --error: #b3261e; --error-fondo: #fbe9e7;
+  --alerta: #8a5a00; --alerta-fondo: #fff4d6;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 16px; line-height: 1.5; color: var(--texto); background: var(--fondo); }
+a { color: var(--primario); }
+a:focus, button:focus, input:focus, select:focus, textarea:focus {
+  outline: 3px solid #ffbf47; outline-offset: 2px; }
+.saltar { position: absolute; left: -999px; }
+.saltar:focus { left: 8px; top: 8px; background: #fff; padding: 8px; z-index: 10; }
+header.barra { background: var(--primario); color: #fff; padding: 12px 16px;
+  display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; justify-content: space-between; }
+header.barra a { color: #fff; text-decoration: none; font-weight: 600; }
+header.barra nav { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+header.barra nav a { padding: 6px 4px; }
+.usuario { font-size: 14px; }
+.usuario form { display: inline; }
+.usuario button { background: none; border: 1px solid #fff; color: #fff; border-radius: 4px;
+  padding: 4px 10px; cursor: pointer; margin-left: 8px; }
+main { max-width: 1000px; margin: 0 auto; padding: 16px; }
+h1 { font-size: 1.6rem; margin: 8px 0 16px; }
+h2 { font-size: 1.2rem; margin-top: 24px; }
+.panel { background: var(--panel); border: 1px solid var(--borde); border-radius: 8px;
+  padding: 16px; margin-bottom: 16px; }
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.tarjeta { background: var(--panel); border: 1px solid var(--borde); border-radius: 8px; padding: 16px; }
+.tarjeta .cifra { font-size: 2rem; font-weight: 700; }
+.tabla { width: 100%; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; background: var(--panel); }
+th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--borde); vertical-align: top; }
+th { background: #e9edf1; font-size: 14px; }
+tr.vencido td { background: var(--error-fondo); }
+.etiqueta { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 13px;
+  background: #e9edf1; }
+.etiqueta.vencido { background: var(--error); color: #fff; }
+form p { margin: 0 0 12px; }
+label { display: block; font-weight: 600; margin-bottom: 4px; }
+input[type=text], input[type=password], input[type=date], input[type=number], input[type=search],
+select, textarea { width: 100%; max-width: 520px; padding: 10px; font-size: 16px;
+  border: 1px solid #8a94a0; border-radius: 6px; background: #fff; }
+input[type=radio] { margin-right: 6px; }
+.boton, button[type=submit] { display: inline-block; background: var(--primario); color: #fff;
+  border: 0; border-radius: 6px; padding: 10px 18px; font-size: 16px; cursor: pointer;
+  text-decoration: none; min-height: 44px; }
+.boton:hover, button[type=submit]:hover { background: var(--primario-osc); }
+.boton.secundario { background: #fff; color: var(--primario); border: 1px solid var(--primario); }
+.errorlist { color: var(--error); margin: 4px 0; padding-left: 18px; }
+.helptext { display: block; color: var(--suave); font-size: 14px; }
+.mensaje { padding: 12px 16px; border-radius: 6px; margin-bottom: 12px; }
+.mensaje.success { background: var(--ok-fondo); color: var(--ok); }
+.mensaje.error { background: var(--error-fondo); color: var(--error); }
+.mensaje.warning, .aviso { background: var(--alerta-fondo); color: var(--alerta);
+  padding: 12px 16px; border-radius: 6px; }
+.acciones { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; }
+.login { max-width: 420px; margin: 48px auto; }
+dl.ficha { display: grid; grid-template-columns: 180px 1fr; gap: 6px 12px; margin: 0; }
+dl.ficha dt { font-weight: 600; color: var(--suave); }
+@media (max-width: 640px) {
+  dl.ficha { grid-template-columns: 1fr; }
+  th, td { padding: 6px; font-size: 14px; }
+}

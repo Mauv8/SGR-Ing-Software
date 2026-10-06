@@ -1,0 +1,10 @@
+{% if form.non_field_errors %}<div class="mensaje error" role="alert">{% for e in form.non_field_errors %}{{ e }} {% endfor %}No se guardó el registro.</div>{% endif %}
+{% if form.errors and not form.non_field_errors %}<div class="mensaje error" role="alert">Revise {{ form.errors|length }} campo(s) marcado(s). No se guardó el registro; lo ya ingresado se conserva.</div>{% endif %}
+{% for campo in form %}
+<p>
+  {{ campo.label_tag }}
+  {{ campo }}
+  {% if campo.help_text %}<span class="helptext">{{ campo.help_text }}</span>{% endif %}
+  {{ campo.errors }}
+</p>
+{% endfor %}

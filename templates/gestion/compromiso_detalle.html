@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block titulo %}Compromiso C-{{ compromiso.pk }}{% endblock %}
+{% block contenido %}
+<h1>Compromiso C-{{ compromiso.pk }}</h1>
+{% if compromiso.vencido %}<div class="mensaje error" role="alert">Compromiso vencido: la fecha comprometida ya pasó y no está realizado.</div>{% endif %}
+<div class="panel">
+  <dl class="ficha">
+    <dt>Estado</dt><dd><span class="etiqueta">{{ compromiso.get_estado_display }}</span></dd>
+    <dt>Solicitante</dt><dd>{{ compromiso.solicitante }}</dd>
+    <dt>Territorio</dt><dd>{{ compromiso.territorio }}</dd>
+    <dt>Responsable</dt><dd>{{ compromiso.responsable.get_full_name }}</dd>
+    <dt>Área de apoyo</dt><dd>{{ compromiso.apoyo|default:"—" }}</dd>
+    <dt>Fecha comprometida</dt><dd>{{ compromiso.fecha_comprometida|date:"d-m-Y" }}</dd>
+    <dt>Descripción</dt><dd>{{ compromiso.descripcion }}</dd>
+    <dt>Actividad de origen</dt><dd>{{ compromiso.actividad.codigo|default:"—" }}</dd>
+  </dl>
+</div>
+{% if form %}
+<div class="panel">
+  <h2>Cambiar estado a «{{ siguiente }}»</h2>
+  <form method="post">
+    {% csrf_token %}
+    {% include "gestion/_campos.html" %}
+    <button type="submit">Confirmar cambio</button>
+  </form>
+</div>
+{% endif %}
+<h2>Historial</h2>
+<div class="tabla"><table>
+  <thead><tr><th scope="col">Fecha</th><th scope="col">Anterior</th><th scope="col">Nuevo</th><th scope="col">Autor</th><th scope="col">Observación</th></tr></thead>
+  <tbody>
+  {% for h in historial %}
+    <tr><td>{{ h.fecha|date:"d-m-Y H:i" }}</td><td>{{ h.get_estado_anterior_display }}</td><td>{{ h.get_estado_nuevo_display }}</td>
+      <td>{{ h.autor.get_full_name }}</td><td>{{ h.observacion }}</td></tr>
+  {% empty %}<tr><td colspan="5">Sin cambios de estado.</td></tr>{% endfor %}
+  </tbody>
+</table></div>
+{% endblock %}

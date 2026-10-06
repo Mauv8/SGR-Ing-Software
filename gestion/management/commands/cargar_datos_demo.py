@@ -92,6 +92,7 @@ class Command(BaseCommand):
             ("rmunoz", "Rodrigo", "Muñoz", Usuario.FUNCIONARIO, costera, territorial),
             ("psoto", "Paula", "Soto", Usuario.FUNCIONARIO, rural, social),
             ("ccarrasco", "Carlos", "Carrasco", Usuario.COORDINADOR, rural, None),
+            ("mvega", "Marcela", "Vega", Usuario.VERIFICADOR, rural, None),
             ("avera", "Andrea", "Vera", Usuario.ADMINISTRADOR, None, None),
         ]
         creados = 0

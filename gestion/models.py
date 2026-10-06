@@ -352,3 +352,261 @@ class Actividad(models.Model):
             anio = (self.fecha or timezone.localdate()).year
             self.codigo = f"ACT-{anio}-{Correlativo.siguiente(anio):05d}"
         super().save(*args, **kwargs)
+
+    # ------------------------------------------------------------------
+    # Avance (RN-003 / RN-009)
+    # ------------------------------------------------------------------
+
+    @property
+    def esta_aprobada(self):
+        """Una actividad suma al avance sólo si tiene evidencia aprobada."""
+        return self.evidencias.filter(estado=Evidencia.APROBADA).exists()
+
+    @property
+    def estado_evidencia(self):
+        """Estado de la evidencia más reciente, para mostrar en listados."""
+        ultima = self.evidencias.order_by("-subida_en").first()
+        return ultima.get_estado_display() if ultima else "Sin evidencia"
+
+
+def avance_aprobado(actividades):
+    """Suma la cantidad de las actividades que tienen evidencia aprobada.
+
+    Es la regla central del SGR: registrar no es lo mismo que cumplir. Una
+    actividad sin evidencia, o con evidencia rechazada, no suma.
+    """
+    total = (
+        actividades.filter(evidencias__estado=Evidencia.APROBADA)
+        .distinct()
+        .aggregate(total=models.Sum("cantidad"))["total"]
+    )
+    return total or 0
+
+
+# ---------------------------------------------------------------------------
+# Evidencias y verificación (HU-05)
+# ---------------------------------------------------------------------------
+
+def ruta_evidencia(instancia, nombre_original):
+    """Guarda el archivo con un nombre aleatorio.
+
+    No se usa el nombre que trae el archivo: así se evita que alguien suba
+    «../../config/settings.py» o un nombre que revele datos de un vecino.
+    """
+    import uuid
+    extension = nombre_original.rsplit(".", 1)[-1].lower()
+    return f"evidencias/{uuid.uuid4().hex}.{extension}"
+
+
+class Evidencia(models.Model):
+    """Fotografía que respalda una actividad (RF-009, RF-010).
+
+    El registro (funcionario) y la decisión (verificador) quedan separados:
+    quien sube la evidencia no puede aprobarla.
+    """
+
+    PENDIENTE = "PENDIENTE"
+    APROBADA = "APROBADA"
+    RECHAZADA = "RECHAZADA"
+    CORRECCION = "CORRECCION"
+    ESTADOS = [
+        (PENDIENTE, "Pendiente de revisión"),
+        (APROBADA, "Aprobada"),
+        (RECHAZADA, "Rechazada"),
+        (CORRECCION, "Corrección solicitada"),
+    ]
+
+    codigo = models.CharField(max_length=30, unique=True, editable=False)
+    actividad = models.ForeignKey(
+        Actividad, on_delete=models.PROTECT, related_name="evidencias",
+    )
+    archivo = models.FileField(upload_to=ruta_evidencia)
+    subida_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
+        related_name="evidencias_subidas",
+    )
+    subida_en = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=10, choices=ESTADOS, default=PENDIENTE)
+    verificador = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
+        related_name="evidencias_revisadas", null=True, blank=True,
+    )
+    revisada_en = models.DateTimeField(null=True, blank=True)
+    observacion = models.TextField("observación", blank=True, max_length=500)
+
+    class Meta:
+        verbose_name = "evidencia"
+        verbose_name_plural = "evidencias"
+        ordering = ["-subida_en"]
+
+    def __str__(self):
+        return self.codigo
+
+    def save(self, *args, **kwargs):
+        if not self.codigo:
+            numero = Evidencia.objects.filter(actividad=self.actividad).count() + 1
+            self.codigo = f"{self.actividad.codigo}-EV{numero}"
+        super().save(*args, **kwargs)
+
+    def decidir(self, verificador, decision, observacion=""):
+        """Registra la decisión del verificador (RF-010).
+
+        Guarda quién decidió, cuándo y por qué. Rechazar o pedir corrección
+        exige observación: sin motivo el funcionario no sabe qué corregir.
+        """
+        if decision not in (self.APROBADA, self.RECHAZADA, self.CORRECCION):
+            raise ValidationError("Decisión no válida.")
+        if self.estado != self.PENDIENTE:
+            raise ValidationError("La evidencia ya fue revisada.")
+        if verificador.rol != Usuario.VERIFICADOR:
+            raise ValidationError("Sólo un verificador puede revisar evidencias.")
+        if verificador.pk == self.subida_por_id:
+            raise ValidationError("No puede revisar una evidencia subida por usted.")
+        if decision != self.APROBADA and not observacion.strip():
+            raise ValidationError("Debe indicar el motivo del rechazo o la corrección.")
+        self.estado = decision
+        self.verificador = verificador
+        self.revisada_en = timezone.now()
+        self.observacion = observacion.strip()
+        self.save(update_fields=["estado", "verificador", "revisada_en", "observacion"])
+
+
+# ---------------------------------------------------------------------------
+# Agenda colectiva: compromisos (HU-02)
+# ---------------------------------------------------------------------------
+
+class CompromisoQuerySet(models.QuerySet):
+    def del_ambito_de(self, usuario):
+        """La agenda es colectiva dentro de la delegación (RF-013)."""
+        if not usuario.is_authenticated:
+            return self.none()
+        if usuario.ve_toda_la_institucion:
+            return self
+        return self.filter(delegacion=usuario.delegacion)
+
+
+class Compromiso(models.Model):
+    """Compromiso futuro del «tubo de trabajo» (RF-013, RF-014)."""
+
+    INGRESADO = "INGRESADO"
+    PENDIENTE = "PENDIENTE"
+    EN_PROCESO = "EN_PROCESO"
+    REALIZADO = "REALIZADO"
+    ESTADOS = [
+        (INGRESADO, "Ingresado"),
+        (PENDIENTE, "Pendiente"),
+        (EN_PROCESO, "En proceso"),
+        (REALIZADO, "Realizado"),
+    ]
+    # Sólo se avanza un paso a la vez: Ingresado → Pendiente → En proceso →
+    # Realizado (diagrama de estados de la Etapa 2).
+    SIGUIENTE = {
+        INGRESADO: PENDIENTE,
+        PENDIENTE: EN_PROCESO,
+        EN_PROCESO: REALIZADO,
+    }
+
+    actividad = models.ForeignKey(
+        Actividad, on_delete=models.PROTECT, related_name="compromisos",
+        null=True, blank=True, verbose_name="actividad de origen",
+    )
+    delegacion = models.ForeignKey(
+        Delegacion, on_delete=models.PROTECT, related_name="compromisos",
+    )
+    solicitante = models.CharField(max_length=160)
+    territorio = models.CharField(max_length=160)
+    responsable = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
+        related_name="compromisos_asignados",
+    )
+    apoyo = models.CharField("área de apoyo", max_length=120, blank=True)
+    fecha_comprometida = models.DateField()
+    descripcion = models.TextField("descripción", max_length=1000)
+    estado = models.CharField(max_length=10, choices=ESTADOS, default=INGRESADO, editable=False)
+    creado_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
+        related_name="compromisos_creados",
+    )
+    creado_en = models.DateTimeField(auto_now_add=True)
+
+    objects = CompromisoQuerySet.as_manager()
+
+    class Meta:
+        verbose_name = "compromiso"
+        verbose_name_plural = "compromisos"
+        ordering = ["fecha_comprometida"]
+
+    def __str__(self):
+        return f"C-{self.pk} · {self.solicitante}"
+
+    @property
+    def vencido(self):
+        """Vencido = la fecha ya pasó y todavía no está realizado (RF-019)."""
+        return (
+            self.estado != self.REALIZADO
+            and self.fecha_comprometida < timezone.localdate()
+        )
+
+    @property
+    def estado_siguiente(self):
+        return self.SIGUIENTE.get(self.estado)
+
+    def clean(self):
+        errores = {}
+        if self._state.adding and self.fecha_comprometida and \
+                self.fecha_comprometida < timezone.localdate():
+            errores["fecha_comprometida"] = "La fecha comprometida no puede estar en el pasado."
+        if self.responsable_id and self.delegacion_id and \
+                self.responsable.delegacion_id != self.delegacion_id:
+            errores["responsable"] = "El responsable debe pertenecer a la misma delegación."
+        if errores:
+            raise ValidationError(errores)
+
+    def puede_cambiar_estado(self, usuario):
+        """El responsable o el coordinador de la delegación (CU-11)."""
+        if usuario.ve_toda_la_institucion:
+            return True
+        if usuario.rol == Usuario.COORDINADOR:
+            return usuario.delegacion_id == self.delegacion_id
+        return usuario.pk == self.responsable_id
+
+    def cambiar_estado(self, usuario, nuevo_estado, observacion):
+        """Aplica una transición válida y deja historial (RF-014, CU-11)."""
+        if not self.puede_cambiar_estado(usuario):
+            raise ValidationError("No tiene permiso para cambiar este compromiso.")
+        if nuevo_estado != self.estado_siguiente:
+            raise ValidationError(
+                f"Transición no permitida desde «{self.get_estado_display()}»."
+            )
+        if not observacion or not observacion.strip():
+            raise ValidationError("La observación es obligatoria.")
+        with transaction.atomic():
+            anterior = self.estado
+            self.estado = nuevo_estado
+            self.save(update_fields=["estado"])
+            CambioEstado.objects.create(
+                compromiso=self, estado_anterior=anterior,
+                estado_nuevo=nuevo_estado, autor=usuario,
+                observacion=observacion.strip(),
+            )
+
+
+class CambioEstado(models.Model):
+    """Historial de un compromiso: anterior, nuevo, autor, fecha y observación."""
+
+    compromiso = models.ForeignKey(
+        Compromiso, on_delete=models.PROTECT, related_name="historial",
+    )
+    estado_anterior = models.CharField(max_length=10, choices=Compromiso.ESTADOS)
+    estado_nuevo = models.CharField(max_length=10, choices=Compromiso.ESTADOS)
+    autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    fecha = models.DateTimeField(auto_now_add=True)
+    observacion = models.TextField("observación", max_length=500)
+
+    class Meta:
+        verbose_name = "cambio de estado"
+        verbose_name_plural = "cambios de estado"
+        ordering = ["fecha"]
+
+    def __str__(self):
+        return f"{self.compromiso}: {self.estado_anterior} → {self.estado_nuevo}"

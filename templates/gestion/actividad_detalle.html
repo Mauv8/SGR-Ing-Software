@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block titulo %}{{ actividad.codigo }}{% endblock %}
+{% block contenido %}
+<h1>Actividad {{ actividad.codigo }}</h1>
+<div class="panel">
+  <dl class="ficha">
+    <dt>Funcionario</dt><dd>{{ actividad.funcionario.get_full_name }}</dd>
+    <dt>Fecha</dt><dd>{{ actividad.fecha|date:"d-m-Y" }}</dd>
+    <dt>Período</dt><dd>{{ actividad.periodo }}</dd>
+    <dt>Ítem</dt><dd>{{ actividad.item.nombre }} ({{ actividad.cantidad }})</dd>
+    <dt>Descripción</dt><dd>{{ actividad.descripcion }}</dd>
+    <dt>Acción</dt><dd>{{ actividad.accion }}</dd>
+    <dt>Contacto</dt><dd>{{ actividad.contacto }} · {{ actividad.telefono }}</dd>
+    <dt>¿Suma al avance?</dt><dd>{% if actividad.esta_aprobada %}Sí, evidencia aprobada{% else %}No, aún sin evidencia aprobada{% endif %}</dd>
+  </dl>
+</div>
+<h2>Evidencias</h2>
+<div class="tabla"><table>
+  <thead><tr><th scope="col">Código</th><th scope="col">Subida</th><th scope="col">Estado</th><th scope="col">Observación</th><th scope="col">Archivo</th></tr></thead>
+  <tbody>
+  {% for e in evidencias %}
+    <tr><td>{{ e.codigo }}</td><td>{{ e.subida_en|date:"d-m-Y H:i" }}</td><td>{{ e.get_estado_display }}</td>
+      <td>{{ e.observacion|default:"—" }}</td><td><a href="{% url 'evidencia_archivo' e.pk %}">Ver imagen</a></td></tr>
+  {% empty %}<tr><td colspan="5">Esta actividad todavía no tiene evidencias.</td></tr>{% endfor %}
+  </tbody>
+</table></div>
+{% if form %}
+<div class="panel">
+  <h2>Adjuntar evidencia fotográfica</h2>
+  <form method="post" action="{% url 'evidencia_subir' actividad.pk %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <p><label for="id_archivo">Fotografía (JPG o PNG, máximo 5 MB)</label>{{ form.archivo }}</p>
+    <button type="submit">Enviar a revisión</button>
+  </form>
+</div>
+{% endif %}
+{% endblock %}

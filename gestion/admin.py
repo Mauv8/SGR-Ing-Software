@@ -11,7 +11,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .models import (
-    Actividad, Cargo, Correlativo, Delegacion, ItemMedicion, Periodo, Usuario,
+    Actividad, CambioEstado, Cargo, Compromiso, Correlativo, Delegacion,
+    Evidencia, ItemMedicion, Periodo, Usuario,
 )
 
 
@@ -84,3 +85,38 @@ class CorrelativoAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
+
+
+@admin.register(Evidencia)
+class EvidenciaAdmin(admin.ModelAdmin):
+    list_display = ("codigo", "actividad", "estado", "verificador", "revisada_en")
+    list_filter = ("estado",)
+    search_fields = ("codigo",)
+    # La decisión se toma en la pantalla del verificador, que registra quién
+    # y cuándo; el panel sólo permite consultarla.
+    readonly_fields = ("codigo", "actividad", "archivo", "subida_por", "subida_en",
+                       "estado", "verificador", "revisada_en", "observacion")
+
+    def has_add_permission(self, request):
+        return False
+
+
+class CambioEstadoInline(admin.TabularInline):
+    model = CambioEstado
+    extra = 0
+    can_delete = False
+    readonly_fields = ("estado_anterior", "estado_nuevo", "autor", "fecha", "observacion")
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(Compromiso)
+class CompromisoAdmin(admin.ModelAdmin):
+    list_display = ("__str__", "delegacion", "responsable", "fecha_comprometida", "estado")
+    list_filter = ("estado", "delegacion")
+    readonly_fields = ("estado", "creado_por", "creado_en")
+    inlines = [CambioEstadoInline]
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).del_ambito_de(request.user)

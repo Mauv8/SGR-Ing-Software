@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block titulo %}Agenda de compromisos{% endblock %}
+{% block contenido %}
+<h1>Agenda de compromisos</h1>
+<form method="get" class="acciones">
+  <label for="estado">Estado</label>
+  <select id="estado" name="estado" style="max-width:220px">
+    <option value="">Todos</option>
+    {% for valor, nombre in estados %}<option value="{{ valor }}" {% if valor == estado %}selected{% endif %}>{{ nombre }}</option>{% endfor %}
+  </select>
+  <button type="submit">Filtrar</button>
+  {% if user.rol == "FUNCIONARIO" or user.rol == "COORDINADOR" %}<a class="boton secundario" href="{% url 'compromiso_nuevo' %}">Nuevo compromiso</a>{% endif %}
+</form>
+<div class="tabla"><table>
+  <thead><tr><th scope="col">N°</th><th scope="col">Solicitante</th><th scope="col">Territorio</th><th scope="col">Responsable</th><th scope="col">Fecha</th><th scope="col">Estado</th></tr></thead>
+  <tbody>
+  {% for c in compromisos %}
+    <tr class="{% if c.vencido %}vencido{% endif %}"><td><a href="{% url 'compromiso_detalle' c.pk %}">C-{{ c.pk }}</a></td>
+      <td>{{ c.solicitante }}</td><td>{{ c.territorio }}</td><td>{{ c.responsable.get_full_name }}</td>
+      <td>{{ c.fecha_comprometida|date:"d-m-Y" }}</td>
+      <td><span class="etiqueta">{{ c.get_estado_display }}</span>{% if c.vencido %} <span class="etiqueta vencido">Vencido</span>{% endif %}</td></tr>
+  {% empty %}<tr><td colspan="6">No hay compromisos para este filtro.</td></tr>{% endfor %}
+  </tbody>
+</table></div>
+{% endblock %}

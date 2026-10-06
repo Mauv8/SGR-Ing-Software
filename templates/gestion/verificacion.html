@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block titulo %}Verificación{% endblock %}
+{% block contenido %}
+<h1>Verificación de evidencias</h1>
+<h2>Pendientes</h2>
+<div class="tabla"><table>
+  <thead><tr><th scope="col">Evidencia</th><th scope="col">Actividad</th><th scope="col">Funcionario</th><th scope="col">Subida</th><th scope="col"></th></tr></thead>
+  <tbody>
+  {% for e in pendientes %}
+    <tr><td>{{ e.codigo }}</td><td>{{ e.actividad.accion }}</td><td>{{ e.subida_por.get_full_name }}</td>
+      <td>{{ e.subida_en|date:"d-m-Y H:i" }}</td><td><a class="boton" href="{% url 'verificacion_decidir' e.pk %}">Revisar</a></td></tr>
+  {% empty %}<tr><td colspan="5">No hay evidencias pendientes.</td></tr>{% endfor %}
+  </tbody>
+</table></div>
+<h2>Revisadas recientemente</h2>
+<div class="tabla"><table>
+  <thead><tr><th scope="col">Evidencia</th><th scope="col">Decisión</th><th scope="col">Verificador</th><th scope="col">Fecha</th><th scope="col">Observación</th></tr></thead>
+  <tbody>
+  {% for e in revisadas %}
+    <tr><td>{{ e.codigo }}</td><td>{{ e.get_estado_display }}</td><td>{{ e.verificador.get_full_name }}</td>
+      <td>{{ e.revisada_en|date:"d-m-Y H:i" }}</td><td>{{ e.observacion|default:"—" }}</td></tr>
+  {% empty %}<tr><td colspan="5">Sin revisiones.</td></tr>{% endfor %}
+  </tbody>
+</table></div>
+{% endblock %}
