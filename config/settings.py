@@ -23,20 +23,27 @@ def env_bool(nombre, por_defecto=False):
 
 # En desarrollo se usa una clave de relleno; en producción la variable es
 # obligatoria y el arranque falla si no está definida.
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "clave-solo-para-desarrollo-local")
-
 DEBUG = env_bool("DJANGO_DEBUG", True)
+
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "")
+if not SECRET_KEY:
+    if not DEBUG:
+        raise RuntimeError("DJANGO_SECRET_KEY debe definirse en el entorno cuando DEBUG es False.")
+    # Sólo en el computador del desarrollador: una clave aleatoria por arranque.
+    from django.core.management.utils import get_random_secret_key
+    SECRET_KEY = get_random_secret_key()
 
 ALLOWED_HOSTS = [
     h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
     if h.strip()
 ]
 
+# Cabeceras que aplican siempre.
+X_FRAME_OPTIONS = "DENY"
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "same-origin"
+
 if not DEBUG:
-    if SECRET_KEY == "clave-solo-para-desarrollo-local":
-        raise RuntimeError(
-            "DJANGO_SECRET_KEY debe definirse en el entorno cuando DEBUG es False."
-        )
     # Cabeceras y cookies que sólo tienen sentido sobre HTTPS.
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
@@ -71,7 +78,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "gestion.seguridad.ContentSecurityPolicyMiddleware",
 ]
+
+# Límite de tamaño de una petición con archivos (evidencia de 5 MB + formulario).
+DATA_UPLOAD_MAX_MEMORY_SIZE = 6 * 1024 * 1024
 
 ROOT_URLCONF = "config.urls"
 

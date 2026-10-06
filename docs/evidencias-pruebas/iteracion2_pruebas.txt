@@ -1,0 +1,154 @@
+Found 69 test(s).
+Creating test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
+Operations to perform:
+  Synchronize unmigrated apps: messages, staticfiles
+  Apply all migrations: admin, auth, contenttypes, gestion, sessions
+Synchronizing apps without migrations:
+  Creating tables...
+    Running deferred SQL...
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0001_initial... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying gestion.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying gestion.0002_sprint_evidencias_compromisos... OK
+  Applying gestion.0003_bitacora_auditoria... OK
+  Applying sessions.0001_initial... OK
+System check identified no issues (0 silenced).
+test_el_administrador_ve_toda_la_institucion (gestion.tests.test_reglas.AmbitoDeVisibilidadTests.test_el_administrador_ve_toda_la_institucion) ... ok
+test_el_coordinador_ve_las_de_su_delegacion (gestion.tests.test_reglas.AmbitoDeVisibilidadTests.test_el_coordinador_ve_las_de_su_delegacion) ... ok
+test_el_funcionario_no_ve_las_de_otra_delegacion (gestion.tests.test_reglas.AmbitoDeVisibilidadTests.test_el_funcionario_no_ve_las_de_otra_delegacion) ... ok
+test_el_funcionario_ve_solo_sus_propias_actividades (gestion.tests.test_reglas.AmbitoDeVisibilidadTests.test_el_funcionario_ve_solo_sus_propias_actividades) ... ok
+test_un_usuario_sin_sesion_no_ve_nada (gestion.tests.test_reglas.AmbitoDeVisibilidadTests.test_un_usuario_sin_sesion_no_ve_nada) ... ok
+test_dos_actividades_consecutivas_reciben_codigos_distintos (gestion.tests.test_reglas.CodigoActividadTests.test_dos_actividades_consecutivas_reciben_codigos_distintos) ... ok
+test_el_codigo_no_cambia_al_volver_a_guardar (gestion.tests.test_reglas.CodigoActividadTests.test_el_codigo_no_cambia_al_volver_a_guardar) ... ok
+test_el_codigo_se_genera_al_guardar (gestion.tests.test_reglas.CodigoActividadTests.test_el_codigo_se_genera_al_guardar) ... ok
+test_el_correlativo_avanza_de_uno_en_uno (gestion.tests.test_reglas.CodigoActividadTests.test_el_correlativo_avanza_de_uno_en_uno) ... ok
+test_rechaza_fecha_de_termino_anterior_al_inicio (gestion.tests.test_reglas.PeriodoTests.test_rechaza_fecha_de_termino_anterior_al_inicio) ... ok
+test_rechaza_periodos_superpuestos (gestion.tests.test_reglas.PeriodoTests.test_rechaza_periodos_superpuestos) ... ok
+test_la_contrasena_no_se_almacena_en_texto_plano (gestion.tests.test_reglas.UsuarioTests.test_la_contrasena_no_se_almacena_en_texto_plano) ... ok
+test_rechaza_funcionario_sin_delegacion_ni_cargo (gestion.tests.test_reglas.UsuarioTests.test_rechaza_funcionario_sin_delegacion_ni_cargo) ... ok
+test_acepta_una_actividad_valida (gestion.tests.test_reglas.ValidacionActividadTests.test_acepta_una_actividad_valida) ... ok
+test_rechaza_actividad_sin_campos_obligatorios (gestion.tests.test_reglas.ValidacionActividadTests.test_rechaza_actividad_sin_campos_obligatorios) ... ok
+test_rechaza_fecha_fuera_del_periodo (gestion.tests.test_reglas.ValidacionActividadTests.test_rechaza_fecha_fuera_del_periodo) ... ok
+test_rechaza_fecha_futura (gestion.tests.test_reglas.ValidacionActividadTests.test_rechaza_fecha_futura) ... ok
+test_rechaza_item_de_otro_cargo (gestion.tests.test_reglas.ValidacionActividadTests.test_rechaza_item_de_otro_cargo) ... ok
+test_rechaza_item_no_vigente_en_registros_nuevos (gestion.tests.test_reglas.ValidacionActividadTests.test_rechaza_item_no_vigente_en_registros_nuevos) ... ok
+test_rechaza_registro_en_periodo_cerrado (gestion.tests.test_reglas.ValidacionActividadTests.test_rechaza_registro_en_periodo_cerrado) ... ok
+test_rechaza_telefono_con_formato_invalido (gestion.tests.test_reglas.ValidacionActividadTests.test_rechaza_telefono_con_formato_invalido) ... ok
+test_cps17_login_fallido_queda_en_bitacora (gestion.tests.test_seguridad.AuditoriaTests.test_cps17_login_fallido_queda_en_bitacora)
+CP-S17 A09: un intento de acceso fallido queda registrado. ... ok
+test_cps18_operaciones_criticas_quedan_en_bitacora (gestion.tests.test_seguridad.AuditoriaTests.test_cps18_operaciones_criticas_quedan_en_bitacora)
+CP-S18 A09: registro de actividad, evidencia y decisión quedan auditados. ... ok
+test_cps19_bitacora_no_se_puede_modificar (gestion.tests.test_seguridad.AuditoriaTests.test_cps19_bitacora_no_se_puede_modificar)
+CP-S19 A09: un registro de la bitácora no se edita ni se borra. ... ok
+test_cps11_bloqueo_tras_intentos_fallidos (gestion.tests.test_seguridad.AutenticacionTests.test_cps11_bloqueo_tras_intentos_fallidos)
+CP-S11 A07: tras 5 intentos fallidos la cuenta se bloquea temporalmente. ... ok
+test_cps12_contrasena_debil_se_rechaza (gestion.tests.test_seguridad.AutenticacionTests.test_cps12_contrasena_debil_se_rechaza)
+CP-S12 A07: la política rechaza contraseñas cortas o comunes. ... ok
+test_cps13_ejecutable_renombrado_como_imagen_se_rechaza (gestion.tests.test_seguridad.CargaDeArchivosTests.test_cps13_ejecutable_renombrado_como_imagen_se_rechaza)
+CP-S13 A04: un .exe renombrado a .jpg no se acepta como evidencia. ... ok
+test_cps14_nombre_de_archivo_con_ruta_no_se_respeta (gestion.tests.test_seguridad.CargaDeArchivosTests.test_cps14_nombre_de_archivo_con_ruta_no_se_respeta)
+CP-S14 A01: «../../settings.png» se guarda con nombre aleatorio en evidencias/. ... ok
+test_cps15_cabeceras_de_seguridad (gestion.tests.test_seguridad.ConfiguracionTests.test_cps15_cabeceras_de_seguridad)
+CP-S15 A05: respuestas con X-Frame-Options, nosniff y Content-Security-Policy. ... ok
+test_cps16_error_no_revela_detalles_internos (gestion.tests.test_seguridad.ConfiguracionTests.test_cps16_error_no_revela_detalles_internos)
+CP-S16 A05: una ruta inexistente no muestra trazas ni configuración. ... ok
+test_cps01_funcionario_no_ve_actividad_de_otra_delegacion (gestion.tests.test_seguridad.ControlDeAccesoTests.test_cps01_funcionario_no_ve_actividad_de_otra_delegacion)
+CP-S01 A01: acceso directo por URL a una actividad ajena → 404. ... ok
+test_cps02_evidencia_ajena_no_se_descarga (gestion.tests.test_seguridad.ControlDeAccesoTests.test_cps02_evidencia_ajena_no_se_descarga)
+CP-S02 A01: descargar la evidencia de otra delegación → 403. ... ok
+test_cps03_funcionario_no_entra_a_verificacion (gestion.tests.test_seguridad.ControlDeAccesoTests.test_cps03_funcionario_no_entra_a_verificacion)
+CP-S03 A01: un funcionario no accede al módulo del verificador → 403. ... ok
+test_cps04_verificador_no_revisa_otra_delegacion (gestion.tests.test_seguridad.ControlDeAccesoTests.test_cps04_verificador_no_revisa_otra_delegacion)
+CP-S04 A01: verificador de Costera no revisa evidencias de Rural → 404. ... ok
+test_cps05_funcionario_no_entra_al_panel_de_administracion (gestion.tests.test_seguridad.ControlDeAccesoTests.test_cps05_funcionario_no_entra_al_panel_de_administracion)
+CP-S05 A01: el panel /admin/ no está disponible para un funcionario. ... ok
+test_cps08_post_sin_token_csrf_se_rechaza (gestion.tests.test_seguridad.CsrfYSesionTests.test_cps08_post_sin_token_csrf_se_rechaza)
+CP-S08 CSRF: un formulario enviado sin token se rechaza (403). ... ok
+test_cps09_cerrar_sesion_invalida_la_sesion (gestion.tests.test_seguridad.CsrfYSesionTests.test_cps09_cerrar_sesion_invalida_la_sesion)
+CP-S09 A07: tras salir, las rutas privadas vuelven a pedir login. ... ok
+test_cps10_cookie_de_sesion_no_accesible_desde_javascript (gestion.tests.test_seguridad.CsrfYSesionTests.test_cps10_cookie_de_sesion_no_accesible_desde_javascript)
+CP-S10 A07: la cookie de sesión es HttpOnly. ... ok
+test_cps06_inyeccion_sql_en_busqueda (gestion.tests.test_seguridad.InyeccionTests.test_cps06_inyeccion_sql_en_busqueda)
+CP-S06 A03: «' OR '1'='1» en la búsqueda no expone otras filas. ... ok
+test_cps07_xss_almacenado_se_muestra_escapado (gestion.tests.test_seguridad.InyeccionTests.test_cps07_xss_almacenado_se_muestra_escapado)
+CP-S07 A03: un <script> guardado en la descripción se muestra como texto. ... ok
+test_cp04_registrar_actividad_valida_genera_codigo (gestion.tests.test_sprint.ActividadTests.test_cp04_registrar_actividad_valida_genera_codigo)
+CP-04 HU-01: actividad válida se guarda y muestra su código. ... ok
+test_cp05_campo_obligatorio_vacio_no_guarda (gestion.tests.test_sprint.ActividadTests.test_cp05_campo_obligatorio_vacio_no_guarda)
+CP-05 HU-01: campo obligatorio vacío informa error y no guarda. ... ok
+test_cp06_telefono_con_formato_invalido (gestion.tests.test_sprint.ActividadTests.test_cp06_telefono_con_formato_invalido)
+CP-06 HU-01: teléfono inválido se rechaza. ... ok
+test_cp07_fecha_sin_periodo_se_rechaza (gestion.tests.test_sprint.ActividadTests.test_cp07_fecha_sin_periodo_se_rechaza)
+CP-07 HU-01: fecha fuera de todo período se rechaza. ... ok
+test_cp08_solo_el_funcionario_registra_actividades (gestion.tests.test_sprint.ActividadTests.test_cp08_solo_el_funcionario_registra_actividades)
+CP-08 HU-01: un verificador no puede registrar actividades (403). ... ok
+test_cp09_busqueda_por_codigo (gestion.tests.test_sprint.ActividadTests.test_cp09_busqueda_por_codigo)
+CP-09 CU-06: buscar por código devuelve la actividad del ámbito. ... ok
+test_cp10_busqueda_sin_coincidencias (gestion.tests.test_sprint.ActividadTests.test_cp10_busqueda_sin_coincidencias)
+CP-10 CU-10: búsqueda sin resultados informa y no falla. ... ok
+test_cp19_crear_compromiso_queda_ingresado_y_visible (gestion.tests.test_sprint.CompromisoTests.test_cp19_crear_compromiso_queda_ingresado_y_visible)
+CP-19 HU-02: compromiso válido queda Ingresado y visible en la agenda. ... ok
+test_cp20_compromiso_sin_responsable_ni_fecha_se_rechaza (gestion.tests.test_sprint.CompromisoTests.test_cp20_compromiso_sin_responsable_ni_fecha_se_rechaza)
+CP-20 RF-017: sin responsable o fecha no se guarda. ... ok
+test_cp21_compromiso_con_fecha_pasada_se_rechaza (gestion.tests.test_sprint.CompromisoTests.test_cp21_compromiso_con_fecha_pasada_se_rechaza)
+CP-21 HU-02: fecha comprometida en el pasado se rechaza. ... ok
+test_cp22_cambio_de_estado_registra_historial (gestion.tests.test_sprint.CompromisoTests.test_cp22_cambio_de_estado_registra_historial)
+CP-22 RF-014: el cambio guarda anterior, nuevo, autor, fecha y observación. ... ok
+test_cp23_transicion_no_permitida (gestion.tests.test_sprint.CompromisoTests.test_cp23_transicion_no_permitida)
+CP-23 CU-11: no se puede saltar de Ingresado a Realizado. ... ok
+test_cp24_cambio_sin_observacion_se_rechaza (gestion.tests.test_sprint.CompromisoTests.test_cp24_cambio_sin_observacion_se_rechaza)
+CP-24 CU-11: la observación es obligatoria. ... ok
+test_cp25_compromiso_vencido_se_destaca (gestion.tests.test_sprint.CompromisoTests.test_cp25_compromiso_vencido_se_destaca)
+CP-25 RF-019: compromiso vencido no realizado aparece destacado. ... ok
+test_cp26_compromiso_realizado_no_figura_vencido (gestion.tests.test_sprint.CompromisoTests.test_cp26_compromiso_realizado_no_figura_vencido)
+CP-26 RF-019: un compromiso realizado no se marca vencido. ... ok
+test_cp27_colega_no_responsable_no_cambia_estado (gestion.tests.test_sprint.CompromisoTests.test_cp27_colega_no_responsable_no_cambia_estado)
+CP-27 CU-11: quien no es responsable ni coordinador no cambia el estado. ... ok
+test_cp28_coordinador_cambia_estado_en_su_delegacion (gestion.tests.test_sprint.CompromisoTests.test_cp28_coordinador_cambia_estado_en_su_delegacion)
+CP-28 CU-11: el coordinador puede cambiar estados de su delegación. ... ok
+test_cp11_adjuntar_evidencia_valida (gestion.tests.test_sprint.EvidenciaTests.test_cp11_adjuntar_evidencia_valida)
+CP-11 HU-05: imagen válida queda vinculada al código de la actividad. ... ok
+test_cp12_formato_no_permitido_se_rechaza (gestion.tests.test_sprint.EvidenciaTests.test_cp12_formato_no_permitido_se_rechaza)
+CP-12 HU-05: archivo .pdf se rechaza con el motivo. ... ok
+test_cp13_archivo_sobre_5mb_se_rechaza (gestion.tests.test_sprint.EvidenciaTests.test_cp13_archivo_sobre_5mb_se_rechaza)
+CP-13 HU-05: archivo mayor a 5 MB se rechaza. ... ok
+test_cp14_aprobar_evidencia_suma_al_avance (gestion.tests.test_sprint.EvidenciaTests.test_cp14_aprobar_evidencia_suma_al_avance)
+CP-14 RN-003: evidencia aprobada suma al avance una sola vez. ... ok
+test_cp15_evidencia_rechazada_no_suma (gestion.tests.test_sprint.EvidenciaTests.test_cp15_evidencia_rechazada_no_suma)
+CP-15 RN-009: evidencia rechazada no suma y conserva el motivo. ... ok
+test_cp16_rechazo_sin_observacion_no_se_guarda (gestion.tests.test_sprint.EvidenciaTests.test_cp16_rechazo_sin_observacion_no_se_guarda)
+CP-16 RF-010: rechazar sin motivo no se permite. ... ok
+test_cp17_evidencia_no_se_revisa_dos_veces (gestion.tests.test_sprint.EvidenciaTests.test_cp17_evidencia_no_se_revisa_dos_veces)
+CP-17 RF-010: una evidencia ya revisada no cambia de decisión. ... ok
+test_cp18_solo_el_autor_adjunta_evidencia (gestion.tests.test_sprint.EvidenciaTests.test_cp18_solo_el_autor_adjunta_evidencia)
+CP-18 HU-05: una colega no puede adjuntar evidencia a mi actividad. ... ok
+test_cp29_flujo_completo_entre_modulos (gestion.tests.test_sprint.FlujoCompletoTests.test_cp29_flujo_completo_entre_modulos)
+CP-29 Integración: registro, evidencia, aprobación, avance y compromiso derivado. ... ok
+test_cp01_login_con_credenciales_validas (gestion.tests.test_sprint.LoginTests.test_cp01_login_con_credenciales_validas)
+CP-01 Login válido lleva al inicio. ... ok
+test_cp02_login_con_credenciales_invalidas (gestion.tests.test_sprint.LoginTests.test_cp02_login_con_credenciales_invalidas)
+CP-02 Login inválido: acceso denegado con mensaje genérico. ... ok
+test_cp03_ruta_privada_sin_sesion_redirige_al_login (gestion.tests.test_sprint.LoginTests.test_cp03_ruta_privada_sin_sesion_redirige_al_login)
+CP-03 Sin sesión, toda ruta privada redirige al login. ... ok
+
+----------------------------------------------------------------------
+Ran 69 tests in 64.406s
+
+OK
+Destroying test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...

@@ -10,6 +10,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from .models import Actividad, Compromiso, Evidencia, ItemMedicion, Periodo, Usuario
+from .seguridad import es_imagen_real
 
 # Límite de tamaño de una evidencia: 5 MB.
 TAMANO_MAXIMO = 5 * 1024 * 1024
@@ -65,6 +66,8 @@ class EvidenciaForm(forms.ModelForm):
             raise ValidationError("Sólo se aceptan imágenes JPG o PNG.")
         if archivo.size > TAMANO_MAXIMO:
             raise ValidationError("El archivo supera el máximo de 5 MB.")
+        if not es_imagen_real(archivo, extension):
+            raise ValidationError("El contenido del archivo no corresponde a una imagen JPG o PNG.")
         return archivo
 
 

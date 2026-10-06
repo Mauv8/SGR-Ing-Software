@@ -610,3 +610,52 @@ class CambioEstado(models.Model):
 
     def __str__(self):
         return f"{self.compromiso}: {self.estado_anterior} → {self.estado_nuevo}"
+
+
+# ---------------------------------------------------------------------------
+# Bitácora de auditoría (RNF-008, Ley 21.459)
+# ---------------------------------------------------------------------------
+
+class RegistroAuditoria(models.Model):
+    """Traza de las operaciones críticas: quién, qué, cuándo y desde dónde.
+
+    Es de sólo inserción: un registro guardado no se modifica ni se elimina,
+    porque una bitácora que se puede alterar no sirve como evidencia.
+    """
+
+    fecha = models.DateTimeField(auto_now_add=True)
+    usuario = models.CharField(max_length=150)
+    accion = models.CharField(max_length=30, db_index=True)
+    entidad = models.CharField(max_length=60, blank=True)
+    identificador = models.CharField(max_length=40, blank=True)
+    detalle = models.CharField(max_length=300, blank=True)
+    ip = models.GenericIPAddressField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "registro de auditoría"
+        verbose_name_plural = "bitácora de auditoría"
+        ordering = ["-fecha"]
+
+    def __str__(self):
+        return f"{self.fecha:%d-%m-%Y %H:%M} {self.usuario} {self.accion}"
+
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            raise PermissionError("La bitácora no admite modificaciones.")
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        raise PermissionError("La bitácora no admite eliminaciones.")
+
+    @classmethod
+    def registrar(cls, request, accion, objeto=None, detalle="", usuario=None):
+        if usuario is None:
+            usuario = request.user.username if request and request.user.is_authenticated else "anónimo"
+        return cls.objects.create(
+            usuario=usuario,
+            accion=accion,
+            entidad=objeto.__class__.__name__ if objeto is not None else "",
+            identificador=str(getattr(objeto, "codigo", None) or getattr(objeto, "pk", "") or ""),
+            detalle=detalle[:300],
+            ip=request.META.get("REMOTE_ADDR") if request else None,
+        )

@@ -8,7 +8,7 @@
     <dt>Funcionario</dt><dd>{{ evidencia.subida_por.get_full_name }}</dd>
     <dt>Estado</dt><dd>{{ evidencia.get_estado_display }}</dd>
   </dl>
-  <p><img src="{% url 'evidencia_archivo' evidencia.pk %}" alt="Fotografía de respaldo de la actividad {{ evidencia.actividad.codigo }}" style="max-width:100%;max-height:360px"></p>
+  <p><img src="{% url 'evidencia_archivo' evidencia.pk %}" alt="Fotografía de respaldo de la actividad {{ evidencia.actividad.codigo }}" class="foto-evidencia"></p>
 </div>
 {% if evidencia.estado == "PENDIENTE" %}
 <div class="panel">

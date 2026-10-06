@@ -12,7 +12,7 @@ from django.contrib.auth.admin import UserAdmin
 
 from .models import (
     Actividad, CambioEstado, Cargo, Compromiso, Correlativo, Delegacion,
-    Evidencia, ItemMedicion, Periodo, Usuario,
+    Evidencia, ItemMedicion, Periodo, RegistroAuditoria, Usuario,
 )
 
 
@@ -120,3 +120,22 @@ class CompromisoAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         return super().get_queryset(request).del_ambito_de(request.user)
+
+
+@admin.register(RegistroAuditoria)
+class RegistroAuditoriaAdmin(admin.ModelAdmin):
+    """Bitácora de sólo lectura: nadie, ni el administrador, la edita o borra."""
+
+    list_display = ("fecha", "usuario", "accion", "entidad", "identificador", "ip")
+    list_filter = ("accion",)
+    search_fields = ("usuario", "identificador")
+    readonly_fields = [f.name for f in RegistroAuditoria._meta.fields]
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False

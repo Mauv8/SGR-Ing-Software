@@ -18,12 +18,20 @@ from django.views.decorators.http import require_POST
 from .forms import (
     ActividadForm, CambioEstadoForm, CompromisoForm, DecisionForm, EvidenciaForm,
 )
-from .models import Actividad, Compromiso, Evidencia, Usuario, avance_aprobado
+from .models import (
+    Actividad, Compromiso, Evidencia, RegistroAuditoria, Usuario, avance_aprobado,
+)
 
 
-def exigir_rol(usuario, *roles):
-    """Corta la petición con 403 si el usuario no tiene alguno de los roles."""
+def exigir_rol(request, *roles):
+    """Corta la petición con 403 si el usuario no tiene alguno de los roles.
+
+    El intento queda en la bitácora: un acceso denegado repetido es una señal
+    de uso indebido que el administrador debe poder ver.
+    """
+    usuario = request.user
     if usuario.rol not in roles and not usuario.is_superuser:
+        RegistroAuditoria.registrar(request, "ACCESO_DENEGADO", detalle=request.path)
         raise PermissionDenied
 
 
@@ -68,10 +76,11 @@ def actividades(request):
 @login_required
 def actividad_nueva(request):
     """CU-01 · Registrar actividad (sólo funcionarios)."""
-    exigir_rol(request.user, Usuario.FUNCIONARIO)
+    exigir_rol(request, Usuario.FUNCIONARIO)
     form = ActividadForm(request.POST or None, usuario=request.user)
     if request.method == "POST" and form.is_valid():
         actividad = form.save()
+        RegistroAuditoria.registrar(request, "ACTIVIDAD_CREADA", actividad)
         messages.success(
             request,
             f"Actividad registrada con el código {actividad.codigo}. "
@@ -108,6 +117,7 @@ def evidencia_subir(request, pk):
         evidencia.actividad = actividad
         evidencia.subida_por = request.user
         evidencia.save()
+        RegistroAuditoria.registrar(request, "EVIDENCIA_SUBIDA", evidencia)
         messages.success(request, f"Evidencia {evidencia.codigo} enviada a revisión.")
     else:
         for error in form.errors.get("archivo", []):
@@ -141,7 +151,7 @@ def evidencia_archivo(request, pk):
 
 @login_required
 def verificacion(request):
-    exigir_rol(request.user, Usuario.VERIFICADOR)
+    exigir_rol(request, Usuario.VERIFICADOR)
     evidencias = evidencias_del_verificador(request.user)
     return render(request, "gestion/verificacion.html", {
         "pendientes": evidencias.filter(estado=Evidencia.PENDIENTE),
@@ -151,7 +161,7 @@ def verificacion(request):
 
 @login_required
 def verificacion_decidir(request, pk):
-    exigir_rol(request.user, Usuario.VERIFICADOR)
+    exigir_rol(request, Usuario.VERIFICADOR)
     evidencia = get_object_or_404(evidencias_del_verificador(request.user), pk=pk)
     form = DecisionForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
@@ -162,6 +172,10 @@ def verificacion_decidir(request, pk):
         except ValidationError as error:
             form.add_error(None, error)
         else:
+            RegistroAuditoria.registrar(
+                request, "EVIDENCIA_REVISADA", evidencia,
+                detalle=f"{evidencia.estado}: {evidencia.observacion}",
+            )
             messages.success(request, f"Evidencia {evidencia.codigo}: {evidencia.get_estado_display()}.")
             return redirect("verificacion")
     return render(request, "gestion/verificacion_decidir.html", {"evidencia": evidencia, "form": form})
@@ -186,10 +200,11 @@ def compromisos(request):
 
 @login_required
 def compromiso_nuevo(request):
-    exigir_rol(request.user, Usuario.FUNCIONARIO, Usuario.COORDINADOR)
+    exigir_rol(request, Usuario.FUNCIONARIO, Usuario.COORDINADOR)
     form = CompromisoForm(request.POST or None, usuario=request.user)
     if request.method == "POST" and form.is_valid():
         compromiso = form.save()
+        RegistroAuditoria.registrar(request, "COMPROMISO_CREADO", compromiso)
         messages.success(request, f"Compromiso {compromiso} registrado como Ingresado.")
         return redirect("compromiso_detalle", pk=compromiso.pk)
     return render(request, "gestion/compromiso_form.html", {"form": form})
@@ -211,6 +226,9 @@ def compromiso_detalle(request, pk):
             except ValidationError as error:
                 form.add_error(None, error)
             else:
+                RegistroAuditoria.registrar(
+                    request, "COMPROMISO_ESTADO", compromiso, detalle=compromiso.estado,
+                )
                 messages.success(request, f"Estado actualizado a {compromiso.get_estado_display()}.")
                 return redirect("compromiso_detalle", pk=compromiso.pk)
     return render(request, "gestion/compromiso_detalle.html", {
